@@ -1,42 +1,63 @@
 #root {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Gold Shimmer Effect */
+.gold-shimmer {
+  background: linear-gradient(90deg, #D4AF37 0%, #FEF6D8 50%, #D4AF37 100%);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@keyframes shimmer {
+  0% {
+    background-position: 0% center;
   }
-  to {
-    transform: rotate(360deg);
+  100% {
+    background-position: 200% center;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Hover transitions */
+.hover-scale {
+  transition: transform 0.3s ease;
 }
 
-.card {
-  padding: 2em;
+.hover-scale:hover {
+  transform: scale(1.05);
 }
 
-.read-the-docs {
-  color: #888;
+/* Watch gallery image transitions */
+.gallery-image {
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.gallery-image-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gallery-image-inactive {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #AA8C2C;
 }

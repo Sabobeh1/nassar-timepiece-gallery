@@ -61,6 +61,23 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Luxury watch theme colors
+				gold: {
+					DEFAULT: '#D4AF37',
+					light: '#F5EAC4',
+					dark: '#AA8C2C'
+				},
+				silver: {
+					DEFAULT: '#C0C0C0',
+					light: '#E6E6E6',
+					dark: '#A0A0A0'
+				},
+				luxury: {
+					black: '#000000',
+					charcoal: '#333333',
+					cream: '#F5F5F5',
+					brown: '#7B3F00'
 				}
 			},
 			borderRadius: {
@@ -89,6 +106,10 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			fontFamily: {
+				'playfair': ['Playfair Display', 'serif'],
+				'montserrat': ['Montserrat', 'sans-serif']
 			}
 		}
 	},
