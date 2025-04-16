@@ -5,12 +5,21 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import BrandSection from "@/components/CategorySection";
-import { Watch, Circle, Clock } from "lucide-react";
+import { Watch, Circle, Clock, ShieldCheck, Timer } from "lucide-react";
 import { watches, getWatchesByBrand } from "@/data/watches";
 
 const Index = () => {
   // Define luxury watch brands
   const brands = ["Audemars Piguet", "Rolex", "Patek Philippe", "Omega", "Breitling"];
+  
+  // Brand icons mapping
+  const brandIcons = {
+    "Audemars Piguet": <Watch className="w-12 h-12 text-gold group-hover:scale-110 transition-transform duration-300" />,
+    "Rolex": <Circle className="w-12 h-12 text-gold group-hover:scale-110 transition-transform duration-300" />,
+    "Patek Philippe": <Clock className="w-12 h-12 text-gold group-hover:scale-110 transition-transform duration-300" />,
+    "Omega": <ShieldCheck className="w-12 h-12 text-gold group-hover:scale-110 transition-transform duration-300" />,
+    "Breitling": <Timer className="w-12 h-12 text-gold group-hover:scale-110 transition-transform duration-300" />
+  };
   
   // Set page title
   useEffect(() => {
@@ -38,7 +47,7 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Brand Circles */}
+            {/* Brand Circles - Enhanced with animations and nicer design */}
             <div className="flex flex-wrap justify-center gap-8 mt-16">
               {brands.map((brand) => (
                 <Link 
@@ -46,15 +55,24 @@ const Index = () => {
                   to={`#${brand.toLowerCase().replace(/\s+/g, '-')}`}
                   className="group flex flex-col items-center"
                 >
-                  <div className="w-28 h-28 rounded-full border-2 border-gold flex items-center justify-center bg-white shadow-md group-hover:bg-gold/10 transition-all duration-300">
-                    {brand === "Audemars Piguet" && <Watch className="w-12 h-12 text-gold" />}
-                    {brand === "Rolex" && <Circle className="w-12 h-12 text-gold" />}
-                    {brand === "Patek Philippe" && <Clock className="w-12 h-12 text-gold" />}
-                    {brand === "Omega" && <Watch className="w-12 h-12 text-gold" />}
-                    {brand === "Breitling" && <Circle className="w-12 h-12 text-gold" />}
+                  <div className="w-32 h-32 rounded-full border-2 border-gold flex items-center justify-center bg-white shadow-lg 
+                    group-hover:shadow-gold/50 group-hover:border-gold/80 transition-all duration-500
+                    relative overflow-hidden animate-fade-in-up">
+                    {/* Background pattern */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle,_transparent_35%,_#f5f5f5_100%)] opacity-40"></div>
+                    
+                    {/* Gold shimmer effect on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-gold/0 via-gold/20 to-gold/0 group-hover:translate-x-full transition-transform duration-1000 ease-in-out opacity-0 group-hover:opacity-50"></div>
+                    
+                    {/* Brand icon */}
+                    <div className="relative z-10 transform group-hover:scale-110 transition-transform duration-300">
+                      {brandIcons[brand]}
+                    </div>
                   </div>
-                  <span className="mt-3 font-montserrat text-luxury-black font-medium group-hover:text-gold transition-colors">
+                  <span className="mt-4 font-montserrat text-luxury-black font-medium group-hover:text-gold transition-colors duration-300 relative">
                     {brand}
+                    {/* Animated underline on hover */}
+                    <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gold group-hover:w-full transition-all duration-300"></span>
                   </span>
                 </Link>
               ))}
