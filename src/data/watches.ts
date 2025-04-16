@@ -214,6 +214,11 @@ export const getWatchesByCategory = (category: string) => {
   return watches.filter(watch => watch.category === category);
 };
 
+// Function to get watches by brand
+export const getWatchesByBrand = (brand: string) => {
+  return watches.filter(watch => watch.brand === brand);
+};
+
 // Get all categories
 export const getCategories = () => {
   const categories = [...new Set(watches.map(watch => watch.category))];
