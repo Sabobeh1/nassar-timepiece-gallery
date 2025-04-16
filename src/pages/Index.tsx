@@ -5,14 +5,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import CategorySection from "@/components/CategorySection";
-import { watches, getWatchesByCategory } from "@/data/watches";
+import { watches, getWatchesByBrand } from "@/data/watches";
 
 const Index = () => {
-  // Get watches by category
-  const luxuryWatches = getWatchesByCategory("Luxury");
-  const classicWatches = getWatchesByCategory("Classic");
-  const sportWatches = getWatchesByCategory("Sport");
-  const smartWatches = getWatchesByCategory("Smart");
+  // Get watches by brand instead of category
+  const audemarsPiguetWatches = getWatchesByBrand("Audemars Piguet");
+  const rolexWatches = getWatchesByBrand("Rolex");
+  const patekPhilippeWatches = getWatchesByBrand("Patek Philippe");
+  const omegaWatches = getWatchesByBrand("Omega");
+  const breitlingWatches = getWatchesByBrand("Breitling");
   
   // Set page title
   useEffect(() => {
@@ -40,92 +41,77 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Categories Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              {/* Luxury */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={luxuryWatches[0].images[0]} 
-                  alt="Luxury Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Luxury</h3>
-                  <p className="text-sm text-gray-200 mb-4">Our premium selection of high-end timepieces</p>
-                  <Link 
-                    to="/luxury"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
+            {/* Brand Selection */}
+            <div className="flex flex-wrap justify-center gap-4 md:gap-8 lg:gap-12 mt-12">
+              {/* Audemars Piguet */}
+              <div className="flex flex-col items-center">
+                <Link to="/brand/audemars-piguet" className="block">
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1A1F2C] border border-gold flex items-center justify-center mb-2 transition-transform hover:scale-105">
+                    <span className="text-gold text-xs md:text-sm lg:text-base font-bold">AUDEMARS PIGUET</span>
+                  </div>
+                  <span className="block text-center text-sm md:text-base font-montserrat mt-2">AP</span>
+                </Link>
               </div>
               
-              {/* Classic */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={classicWatches[0].images[0]} 
-                  alt="Classic Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Classic</h3>
-                  <p className="text-sm text-gray-200 mb-4">Timeless designs that never go out of style</p>
-                  <Link 
-                    to="/classic"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
+              {/* Rolex */}
+              <div className="flex flex-col items-center">
+                <Link to="/brand/rolex" className="block">
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1A1F2C] border border-gold flex items-center justify-center mb-2 transition-transform hover:scale-105">
+                    <span className="text-gold text-xs md:text-sm lg:text-base font-bold">ROLEX</span>
+                  </div>
+                  <span className="block text-center text-sm md:text-base font-montserrat mt-2">ROLEX</span>
+                </Link>
               </div>
               
-              {/* Sport */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={sportWatches[0].images[0]} 
-                  alt="Sport Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Sport</h3>
-                  <p className="text-sm text-gray-200 mb-4">Rugged timepieces for the active lifestyle</p>
-                  <Link 
-                    to="/sport"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
+              {/* Patek Philippe */}
+              <div className="flex flex-col items-center">
+                <Link to="/brand/patek-philippe" className="block">
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1A1F2C] border border-gold flex items-center justify-center mb-2 transition-transform hover:scale-105">
+                    <span className="text-gold text-xs md:text-sm lg:text-base font-bold">PATEK PHILIPPE</span>
+                  </div>
+                  <span className="block text-center text-sm md:text-base font-montserrat mt-2">PATEK PHILIP...</span>
+                </Link>
               </div>
               
-              {/* Smart */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={smartWatches[0].images[0]} 
-                  alt="Smart Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Smart</h3>
-                  <p className="text-sm text-gray-200 mb-4">Modern technology meets elegant design</p>
-                  <Link 
-                    to="/smart"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
+              {/* Omega */}
+              <div className="flex flex-col items-center">
+                <Link to="/brand/omega" className="block">
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1A1F2C] border border-gold flex items-center justify-center mb-2 transition-transform hover:scale-105">
+                    <span className="text-gold text-xs md:text-sm lg:text-base font-bold">OMEGA</span>
+                  </div>
+                  <span className="block text-center text-sm md:text-base font-montserrat mt-2">OMEGA</span>
+                </Link>
+              </div>
+              
+              {/* Breitling */}
+              <div className="flex flex-col items-center">
+                <Link to="/brand/breitling" className="block">
+                  <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1A1F2C] border border-gold flex items-center justify-center mb-2 transition-transform hover:scale-105">
+                    <span className="text-gold text-xs md:text-sm lg:text-base font-bold">BREITLING</span>
+                  </div>
+                  <span className="block text-center text-sm md:text-base font-montserrat mt-2">BREITLING</span>
+                </Link>
               </div>
             </div>
           </div>
         </section>
         
-        {/* Category Sections */}
-        <CategorySection title="Luxury" watches={luxuryWatches} />
-        <CategorySection title="Classic" watches={classicWatches} />
-        <CategorySection title="Sport" watches={sportWatches} />
-        <CategorySection title="Smart" watches={smartWatches} />
+        {/* Brand Sections */}
+        {audemarsPiguetWatches.length > 0 && (
+          <CategorySection title="Audemars Piguet" watches={audemarsPiguetWatches} />
+        )}
+        {rolexWatches.length > 0 && (
+          <CategorySection title="Rolex" watches={rolexWatches} />
+        )}
+        {patekPhilippeWatches.length > 0 && (
+          <CategorySection title="Patek Philippe" watches={patekPhilippeWatches} />
+        )}
+        {omegaWatches.length > 0 && (
+          <CategorySection title="Omega" watches={omegaWatches} />
+        )}
+        {breitlingWatches.length > 0 && (
+          <CategorySection title="Breitling" watches={breitlingWatches} />
+        )}
       </main>
       
       <Footer />
