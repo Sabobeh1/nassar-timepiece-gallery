@@ -24,11 +24,6 @@ const CategorySection = ({ title, watches }: CategorySectionProps) => {
     setVisibleWatches(prev => prev + 4);
   };
 
-  // If no watches for this brand/category, don't render the section
-  if (watches.length === 0) {
-    return null;
-  }
-
   return (
     <section className="mb-12 py-8">
       <div className="container mx-auto px-4">
