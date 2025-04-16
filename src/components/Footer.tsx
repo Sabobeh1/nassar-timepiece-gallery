@@ -1,6 +1,7 @@
 
-import { Facebook, Instagram, TikTok, Phone } from "lucide-react";
+import { Facebook, Instagram, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import TikTokIcon from "./icons/TikTokIcon";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -58,7 +59,7 @@ const Footer = () => {
                   <Instagram size={20} />
                 </a>
                 <a href="https://www.tiktok.com/@nassar.watches" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
-                  <TikTok size={20} />
+                  <TikTokIcon size={20} />
                 </a>
                 <a href="https://wa.me/970595858691" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
                   <Phone size={20} />

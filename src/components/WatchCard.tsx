@@ -1,7 +1,8 @@
 
 import { Link } from "react-router-dom";
 import ImageGallery from "./ImageGallery";
-import { Facebook, Instagram, TikTok, Phone } from "lucide-react";
+import { Facebook, Instagram, Phone } from "lucide-react";
+import TikTokIcon from "./icons/TikTokIcon";
 
 interface WatchCardProps {
   id: string;
@@ -83,7 +84,7 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
             className="text-luxury-black hover:text-[#000000] transition-colors" 
             title="Share on TikTok"
           >
-            <TikTok size={18} />
+            <TikTokIcon size={18} />
           </a>
           <a 
             href={whatsappShareUrl} 
