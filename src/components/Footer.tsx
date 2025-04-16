@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, TikTok, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -43,7 +43,7 @@ const Footer = () => {
             <h3 className="text-lg font-playfair font-bold mb-4 border-b border-gold pb-2">Contact</h3>
             <ul className="space-y-2 font-montserrat">
               <li className="text-gray-300">Email: info@nassarwatches.com</li>
-              <li className="text-gray-300">Phone: +1 (555) 123-4567</li>
+              <li className="text-gray-300">Phone: +970595858691</li>
               <li className="text-gray-300">Address: 123 Luxury Lane, New York, NY</li>
             </ul>
             
@@ -51,17 +51,17 @@ const Footer = () => {
             <div className="mt-6">
               <h3 className="text-lg font-playfair font-bold mb-3 border-b border-gold pb-2">Follow Us</h3>
               <div className="flex space-x-4 mt-3">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
+                <a href="https://www.facebook.com/profile.php?id=61555817681896" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
                   <Facebook size={20} />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
+                <a href="https://www.instagram.com/nassar_watches99/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
                   <Instagram size={20} />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
-                  <Twitter size={20} />
+                <a href="https://www.tiktok.com/@nassar.watches" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
+                  <TikTok size={20} />
                 </a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
-                  <Youtube size={20} />
+                <a href="https://wa.me/970595858691" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
+                  <Phone size={20} />
                 </a>
               </div>
             </div>
