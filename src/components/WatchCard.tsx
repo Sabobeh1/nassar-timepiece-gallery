@@ -22,7 +22,7 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
     maximumFractionDigits: 0,
   }).format(price);
 
-  // Generate share message
+  // Generate share message with direct link to product details
   const shareMessage = `Check out this ${brand} ${name} watch for ${formattedPrice} at Nassar Watches!`;
   const productUrl = `${window.location.origin}/watch/${id}`;
   
@@ -35,7 +35,9 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
   return (
     <div className="group bg-white rounded-md shadow-sm hover:shadow-md transition duration-300 overflow-hidden">
       <div className="relative">
-        <ImageGallery images={images} altText={name} />
+        <Link to={`/watch/${id}`}>
+          <ImageGallery images={images} altText={name} />
+        </Link>
         
         {/* New Badge */}
         {isNew && (
