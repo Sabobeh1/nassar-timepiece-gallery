@@ -1,12 +1,12 @@
 
 // Mock data for watches
 export const watches = [
-  // Luxury Category
+  // Audemars Piguet
   {
-    id: "luxury-1",
-    name: "Sovereign Chronograph",
-    brand: "Nassar",
-    price: 8500,
+    id: "ap-1",
+    name: "Royal Oak",
+    brand: "Audemars Piguet",
+    price: 45000,
     category: "Luxury",
     images: [
       "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
@@ -16,10 +16,10 @@ export const watches = [
     isNew: true
   },
   {
-    id: "luxury-2",
-    name: "Eclipse Diamond",
-    brand: "Nassar",
-    price: 12000,
+    id: "ap-2",
+    name: "Royal Oak Offshore",
+    brand: "Audemars Piguet",
+    price: 38000,
     category: "Luxury",
     images: [
       "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1764&q=80",
@@ -27,11 +27,13 @@ export const watches = [
       "https://images.unsplash.com/photo-1587925358603-c2eea5305bbc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80"
     ]
   },
+
+  // Rolex
   {
-    id: "luxury-3",
-    name: "Grand Imperial",
-    brand: "Nassar",
-    price: 15800,
+    id: "rolex-1",
+    name: "Submariner",
+    brand: "Rolex",
+    price: 15000,
     category: "Luxury",
     images: [
       "https://images.unsplash.com/photo-1622434641406-a158123450f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1777&q=80",
@@ -41,10 +43,10 @@ export const watches = [
     isNew: true
   },
   {
-    id: "luxury-4",
-    name: "Royale Perpetual",
-    brand: "Nassar",
-    price: 18500,
+    id: "rolex-2",
+    name: "Daytona",
+    brand: "Rolex",
+    price: 32000,
     category: "Luxury",
     images: [
       "https://images.unsplash.com/photo-1638605384037-5e65fa84266b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
@@ -52,11 +54,13 @@ export const watches = [
       "https://images.unsplash.com/photo-1568632234170-eda418b4139f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1039&q=80"
     ]
   },
+
+  // Patek Philippe
   {
-    id: "luxury-5",
-    name: "Celestial Moonphase",
-    brand: "Nassar",
-    price: 14500,
+    id: "patek-1",
+    name: "Nautilus",
+    brand: "Patek Philippe",
+    price: 75000,
     category: "Luxury",
     images: [
       "https://images.unsplash.com/photo-1639584597993-8c2523cb5758?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1035&q=80",
@@ -64,13 +68,11 @@ export const watches = [
       "https://images.unsplash.com/photo-1622434641406-a158123450f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1777&q=80"
     ]
   },
-  
-  // Classic Category
   {
-    id: "classic-1",
-    name: "Heritage Automatic",
-    brand: "Nassar",
-    price: 4500,
+    id: "patek-2",
+    name: "Calatrava",
+    brand: "Patek Philippe",
+    price: 30000,
     category: "Classic",
     images: [
       "https://images.unsplash.com/photo-1580287037728-61479d3aedb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
@@ -79,12 +81,14 @@ export const watches = [
     ],
     isNew: true
   },
+
+  // Omega
   {
-    id: "classic-2",
-    name: "Elegant Dress",
-    brand: "Nassar",
-    price: 3800,
-    category: "Classic",
+    id: "omega-1",
+    name: "Speedmaster",
+    brand: "Omega",
+    price: 8500,
+    category: "Sport",
     images: [
       "https://images.unsplash.com/photo-1548171302-e1a67d51ff18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
       "https://images.unsplash.com/photo-1568632234170-eda418b4139f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1039&q=80",
@@ -92,126 +96,60 @@ export const watches = [
     ]
   },
   {
-    id: "classic-3",
-    name: "Timeless Automatic",
-    brand: "Nassar",
-    price: 5200,
-    category: "Classic",
+    id: "omega-2",
+    name: "Seamaster",
+    brand: "Omega",
+    price: 7200,
+    category: "Sport",
     images: [
       "https://images.unsplash.com/photo-1568632234170-eda418b4139f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1039&q=80",
       "https://images.unsplash.com/photo-1548171302-e1a67d51ff18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
       "https://images.unsplash.com/photo-1524805444758-089113d48a6d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1288&q=80"
     ]
   },
+
+  // Breitling
   {
-    id: "classic-4",
-    name: "Ambassador",
-    brand: "Nassar",
-    price: 4800,
-    category: "Classic",
-    images: [
-      "https://images.unsplash.com/photo-1624365169364-0640adaebb80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2064&q=80",
-      "https://images.unsplash.com/photo-1548171302-e1a67d51ff18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
-      "https://images.unsplash.com/photo-1580287037728-61479d3aedb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80"
-    ],
-    isNew: true
-  },
-  
-  // Sport Category
-  {
-    id: "sport-1",
-    name: "Adventurer Chronograph",
-    brand: "Nassar",
-    price: 6200,
+    id: "breitling-1",
+    name: "Navitimer",
+    brand: "Breitling",
+    price: 9800,
     category: "Sport",
     images: [
-      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1288&q=80",
       "https://images.unsplash.com/photo-1532667449560-72a95c8d381b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
       "https://images.unsplash.com/photo-1622434641406-a158123450f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1777&q=80"
-    ]
+    ],
+    isNew: true
   },
   {
-    id: "sport-2",
-    name: "Diver Professional",
-    brand: "Nassar",
-    price: 7500,
+    id: "breitling-2",
+    name: "Superocean",
+    brand: "Breitling",
+    price: 6300,
     category: "Sport",
     images: [
       "https://images.unsplash.com/photo-1595923533867-ff8a1ffe0267?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
       "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1180&q=80",
       "https://images.unsplash.com/photo-1580287037728-61479d3aedb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80"
-    ],
-    isNew: true
-  },
-  {
-    id: "sport-3",
-    name: "Explorer GMT",
-    brand: "Nassar",
-    price: 5600,
-    category: "Sport",
-    images: [
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1289&q=80",
-      "https://images.unsplash.com/photo-1595923533867-ff8a1ffe0267?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
-      "https://images.unsplash.com/photo-1532667449560-72a95c8d381b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
     ]
-  },
-  {
-    id: "sport-4",
-    name: "Pilot Automatic",
-    brand: "Nassar",
-    price: 4900,
-    category: "Sport",
-    images: [
-      "https://images.unsplash.com/photo-1532667449560-72a95c8d381b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      "https://images.unsplash.com/photo-1524592094714-0f0654e20314?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1289&q=80",
-      "https://images.unsplash.com/photo-1580287037728-61479d3aedb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80"
-    ]
-  },
-  
-  // Smart Category
-  {
-    id: "smart-1",
-    name: "Digital Elite",
-    brand: "Nassar",
-    price: 950,
-    category: "Smart",
-    images: [
-      "https://images.unsplash.com/photo-1434493651957-4ec11beae249?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
-      "https://images.unsplash.com/photo-1549482199-bc1ca6f58502?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1264&q=80",
-      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80"
-    ],
-    isNew: true
-  },
-  {
-    id: "smart-2",
-    name: "Fitness Tracker Pro",
-    brand: "Nassar",
-    price: 1200,
-    category: "Smart",
-    images: [
-      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80",
-      "https://images.unsplash.com/photo-1434493651957-4ec11beae249?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
-      "https://images.unsplash.com/photo-1549482199-bc1ca6f58502?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1264&q=80"
-    ]
-  },
-  {
-    id: "smart-3",
-    name: "SmartLuxe Connect",
-    brand: "Nassar",
-    price: 1500,
-    category: "Smart",
-    images: [
-      "https://images.unsplash.com/photo-1549482199-bc1ca6f58502?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1264&q=80",
-      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1772&q=80",
-      "https://images.unsplash.com/photo-1434493651957-4ec11beae249?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80"
-    ],
-    isNew: true
   }
 ];
 
 // Function to get watches by category
 export const getWatchesByCategory = (category: string) => {
   return watches.filter(watch => watch.category === category);
+};
+
+// Function to get watches by brand
+export const getWatchesByBrand = (brand: string) => {
+  return watches.filter(watch => watch.brand === brand);
+};
+
+// Get all brands
+export const getBrands = () => {
+  const brands = [...new Set(watches.map(watch => watch.brand))];
+  return brands;
 };
 
 // Get all categories

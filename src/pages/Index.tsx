@@ -4,15 +4,13 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
-import CategorySection from "@/components/CategorySection";
-import { watches, getWatchesByCategory } from "@/data/watches";
+import BrandSection from "@/components/CategorySection";
+import { Watch, Circle, Clock } from "lucide-react";
+import { watches, getWatchesByBrand } from "@/data/watches";
 
 const Index = () => {
-  // Get watches by category
-  const luxuryWatches = getWatchesByCategory("Luxury");
-  const classicWatches = getWatchesByCategory("Classic");
-  const sportWatches = getWatchesByCategory("Sport");
-  const smartWatches = getWatchesByCategory("Smart");
+  // Define luxury watch brands
+  const brands = ["Audemars Piguet", "Rolex", "Patek Philippe", "Omega", "Breitling"];
   
   // Set page title
   useEffect(() => {
@@ -40,92 +38,36 @@ const Index = () => {
               </p>
             </div>
             
-            {/* Categories Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              {/* Luxury */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={luxuryWatches[0].images[0]} 
-                  alt="Luxury Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Luxury</h3>
-                  <p className="text-sm text-gray-200 mb-4">Our premium selection of high-end timepieces</p>
-                  <Link 
-                    to="/luxury"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Classic */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={classicWatches[0].images[0]} 
-                  alt="Classic Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Classic</h3>
-                  <p className="text-sm text-gray-200 mb-4">Timeless designs that never go out of style</p>
-                  <Link 
-                    to="/classic"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Sport */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={sportWatches[0].images[0]} 
-                  alt="Sport Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Sport</h3>
-                  <p className="text-sm text-gray-200 mb-4">Rugged timepieces for the active lifestyle</p>
-                  <Link 
-                    to="/sport"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Smart */}
-              <div className="relative group overflow-hidden rounded-lg shadow-sm">
-                <img 
-                  src={smartWatches[0].images[0]} 
-                  alt="Smart Watches" 
-                  className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-playfair font-bold text-white mb-2">Smart</h3>
-                  <p className="text-sm text-gray-200 mb-4">Modern technology meets elegant design</p>
-                  <Link 
-                    to="/smart"
-                    className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
-                  >
-                    Explore Collection
-                  </Link>
-                </div>
-              </div>
+            {/* Brand Circles */}
+            <div className="flex flex-wrap justify-center gap-8 mt-16">
+              {brands.map((brand) => (
+                <Link 
+                  key={brand}
+                  to={`#${brand.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="group flex flex-col items-center"
+                >
+                  <div className="w-28 h-28 rounded-full border-2 border-gold flex items-center justify-center bg-white shadow-md group-hover:bg-gold/10 transition-all duration-300">
+                    {brand === "Audemars Piguet" && <Watch className="w-12 h-12 text-gold" />}
+                    {brand === "Rolex" && <Circle className="w-12 h-12 text-gold" />}
+                    {brand === "Patek Philippe" && <Clock className="w-12 h-12 text-gold" />}
+                    {brand === "Omega" && <Watch className="w-12 h-12 text-gold" />}
+                    {brand === "Breitling" && <Circle className="w-12 h-12 text-gold" />}
+                  </div>
+                  <span className="mt-3 font-montserrat text-luxury-black font-medium group-hover:text-gold transition-colors">
+                    {brand}
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
         
-        {/* Category Sections */}
-        <CategorySection title="Luxury" watches={luxuryWatches} />
-        <CategorySection title="Classic" watches={classicWatches} />
-        <CategorySection title="Sport" watches={sportWatches} />
-        <CategorySection title="Smart" watches={smartWatches} />
+        {/* Brand Sections */}
+        {brands.map((brand) => (
+          <div key={brand} id={brand.toLowerCase().replace(/\s+/g, '-')}>
+            <BrandSection brand={brand} watches={getWatchesByBrand(brand)} />
+          </div>
+        ))}
       </main>
       
       <Footer />

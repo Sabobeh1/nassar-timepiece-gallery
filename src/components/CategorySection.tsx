@@ -12,12 +12,12 @@ interface Watch {
   isNew?: boolean;
 }
 
-interface CategorySectionProps {
-  title: string;
+interface BrandSectionProps {
+  brand: string;
   watches: Watch[];
 }
 
-const CategorySection = ({ title, watches }: CategorySectionProps) => {
+const BrandSection = ({ brand, watches }: BrandSectionProps) => {
   const [visibleWatches, setVisibleWatches] = useState(4);
 
   const handleLoadMore = () => {
@@ -29,7 +29,7 @@ const CategorySection = ({ title, watches }: CategorySectionProps) => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-playfair font-bold text-luxury-black">
-            <span className="text-gold">{title}</span> Collection
+            <span className="text-gold">{brand}</span> Collection
           </h2>
           <div className="h-0.5 flex-grow ml-6 bg-gradient-to-r from-gold to-transparent"></div>
         </div>
@@ -64,4 +64,4 @@ const CategorySection = ({ title, watches }: CategorySectionProps) => {
   );
 };
 
-export default CategorySection;
+export default BrandSection;
