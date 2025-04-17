@@ -30,16 +30,16 @@ const ContactPage = () => {
   };
   
   const openWhatsApp = () => {
-    window.open("https://wa.me/970595858691", "_blank");
+    window.open("https://wa.me/970593484819", "_blank");
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-luxury-cream">
+    <div className="min-h-screen flex flex-col bg-Rolex-cream">
       <Navbar />
       
       <main className="flex-grow py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-playfair font-bold text-luxury-black mb-8 text-center">
+          <h1 className="text-4xl font-playfair font-bold text-Rolex-black mb-8 text-center">
             Contact <span className="text-gold">Us</span>
           </h1>
           
@@ -47,7 +47,7 @@ const ContactPage = () => {
             {/* Contact Info */}
             <div className="lg:w-1/3">
               <div className="bg-white p-6 rounded-lg shadow-sm h-full">
-                <h2 className="text-2xl font-playfair font-semibold text-luxury-black mb-6">
+                <h2 className="text-2xl font-playfair font-semibold text-Rolex-black mb-6">
                   Get in Touch
                 </h2>
                 
@@ -57,8 +57,8 @@ const ContactPage = () => {
                       <Phone className="text-gold" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-luxury-black mb-1">Phone</h3>
-                      <p className="text-luxury-charcoal/80">+970-59-585-8691</p>
+                      <h3 className="font-semibold text-Rolex-black mb-1">Phone</h3>
+                      <p className="text-Rolex-charcoal/80">+970-59-585-8691</p>
                       <button 
                         onClick={openWhatsApp}
                         className="text-sm text-gold hover:underline mt-1 flex items-center"
@@ -74,8 +74,8 @@ const ContactPage = () => {
                       <Mail className="text-gold" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-luxury-black mb-1">Email</h3>
-                      <a href="mailto:info@nassarwatches.com" className="text-luxury-charcoal/80 hover:text-gold">
+                      <h3 className="font-semibold text-Rolex-black mb-1">Email</h3>
+                      <a href="mailto:info@nassarwatches.com" className="text-Rolex-charcoal/80 hover:text-gold">
                         info@nassarwatches.com
                       </a>
                     </div>
@@ -86,8 +86,8 @@ const ContactPage = () => {
                       <MapPin className="text-gold" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-luxury-black mb-1">Location</h3>
-                      <p className="text-luxury-charcoal/80">
+                      <h3 className="font-semibold text-Rolex-black mb-1">Location</h3>
+                      <p className="text-Rolex-charcoal/80">
                         Al-Remal, Gaza
                         <br />
                         Palestine
@@ -100,8 +100,8 @@ const ContactPage = () => {
                       <Clock className="text-gold" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-luxury-black mb-1">Business Hours</h3>
-                      <p className="text-luxury-charcoal/80">
+                      <h3 className="font-semibold text-Rolex-black mb-1">Business Hours</h3>
+                      <p className="text-Rolex-charcoal/80">
                         Monday - Friday: 9am to 6pm
                         <br />
                         Saturday: 10am to 4pm
@@ -117,14 +117,14 @@ const ContactPage = () => {
             {/* Contact Form */}
             <div className="lg:w-2/3">
               <div className="bg-white p-6 rounded-lg shadow-sm">
-                <h2 className="text-2xl font-playfair font-semibold text-luxury-black mb-6">
+                <h2 className="text-2xl font-playfair font-semibold text-Rolex-black mb-6">
                   Send Us a Message
                 </h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-luxury-charcoal mb-1">
+                      <label htmlFor="name" className="block text-sm font-medium text-Rolex-charcoal mb-1">
                         Your Name
                       </label>
                       <Input
@@ -137,7 +137,7 @@ const ContactPage = () => {
                     </div>
                     
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-luxury-charcoal mb-1">
+                      <label htmlFor="email" className="block text-sm font-medium text-Rolex-charcoal mb-1">
                         Email Address
                       </label>
                       <Input
@@ -151,7 +151,7 @@ const ContactPage = () => {
                   </div>
                   
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-luxury-charcoal mb-1">
+                    <label htmlFor="subject" className="block text-sm font-medium text-Rolex-charcoal mb-1">
                       Subject
                     </label>
                     <Input
@@ -164,7 +164,7 @@ const ContactPage = () => {
                   </div>
                   
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-luxury-charcoal mb-1">
+                    <label htmlFor="message" className="block text-sm font-medium text-Rolex-charcoal mb-1">
                       Message
                     </label>
                     <Textarea

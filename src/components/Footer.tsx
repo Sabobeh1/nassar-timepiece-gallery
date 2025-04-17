@@ -7,7 +7,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-luxury-black text-white pt-12 pb-6">
+    <footer className="bg-Rolex-black text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and About */}
@@ -16,7 +16,7 @@ const Footer = () => {
               <span className="text-gold">NASSAR</span> WATCHES
             </h2>
             <p className="text-gray-300 font-montserrat mb-6 max-w-md">
-              Discover our carefully curated collection of luxury timepieces. Each watch represents the pinnacle of craftsmanship and sophistication.
+              Discover our carefully curated collection of Rolex timepieces. Each watch represents the pinnacle of craftsmanship and sophistication.
             </p>
           </div>
 
@@ -44,8 +44,8 @@ const Footer = () => {
             <h3 className="text-lg font-playfair font-bold mb-4 border-b border-gold pb-2">Contact</h3>
             <ul className="space-y-2 font-montserrat">
               <li className="text-gray-300">Email: info@nassarwatches.com</li>
-              <li className="text-gray-300">Phone: +970595858691</li>
-              <li className="text-gray-300">Address: 123 Luxury Lane, New York, NY</li>
+              <li className="text-gray-300">Phone: +970593484819</li>
+              <li className="text-gray-300">Address: 123 Rolex Lane, New York, NY</li>
             </ul>
             
             {/* Social Media */}
@@ -61,7 +61,7 @@ const Footer = () => {
                 <a href="https://www.tiktok.com/@nassar.watches" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
                   <TikTokIcon size={20} />
                 </a>
-                <a href="https://wa.me/970595858691" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
+                <a href="https://wa.me/970593484819" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
                   <Phone size={20} />
                 </a>
               </div>

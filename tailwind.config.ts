@@ -62,7 +62,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Luxury watch theme colors
+				// Rolex watch theme colors
 				gold: {
 					DEFAULT: '#D4AF37',
 					light: '#F5EAC4',
@@ -73,7 +73,7 @@ export default {
 					light: '#E6E6E6',
 					dark: '#A0A0A0'
 				},
-				luxury: {
+				Rolex: {
 					black: '#000000',
 					charcoal: '#333333',
 					cream: '#F5F5F5',

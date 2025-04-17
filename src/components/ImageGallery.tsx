@@ -41,13 +41,13 @@ const ImageGallery = ({ images, altText }: ImageGalleryProps) => {
         {/* Navigation Arrows */}
         <button 
           onClick={handlePrevious}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-luxury-charcoal hover:bg-white transition shadow"
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-Rolex-charcoal hover:bg-white transition shadow"
         >
           <ChevronLeft size={20} />
         </button>
         <button 
           onClick={handleNext}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-luxury-charcoal hover:bg-white transition shadow"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-Rolex-charcoal hover:bg-white transition shadow"
         >
           <ChevronRight size={20} />
         </button>

@@ -29,7 +29,7 @@ const CartDropdown = () => {
   
   const handleAskQuestion = (productId: string, productName: string) => {
     const productUrl = `${window.location.origin}/watch/${productId}`;
-    const whatsappUrl = `https://wa.me/970595858691?text=I have a question about the ${productName} watch. Product link: ${productUrl}`;
+    const whatsappUrl = `https://wa.me/970593484819?text=I have a question about the ${productName} watch. Product link: ${productUrl}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -62,7 +62,7 @@ const CartDropdown = () => {
   };
 
   const handleWhatsappCheckout = () => {
-    const whatsappUrl = `https://wa.me/970595858691?text=${encodeURIComponent(generateCartItemsList())}`;
+    const whatsappUrl = `https://wa.me/970593484819?text=${encodeURIComponent(generateCartItemsList())}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -89,7 +89,7 @@ const CartDropdown = () => {
             </div>
             
             <div className="ml-4 flex flex-1 flex-col">
-              <div className="flex justify-between text-base font-medium text-luxury-black">
+              <div className="flex justify-between text-base font-medium text-Rolex-black">
                 <Link to={`/watch/${item.id}`}>
                   <h3 className="font-playfair hover:text-gold transition-colors">
                     {item.name}

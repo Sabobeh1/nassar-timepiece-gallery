@@ -71,7 +71,7 @@ const CategoryPage = () => {
       : '';
 
   return (
-    <div className="min-h-screen flex flex-col bg-luxury-cream">
+    <div className="min-h-screen flex flex-col bg-luxuryy-cream">
       <Navbar />
       
       <main className="flex-grow py-8">
@@ -80,14 +80,14 @@ const CategoryPage = () => {
           <Button 
             onClick={() => navigate("/")} 
             variant="outline" 
-            className="mb-6 text-luxury-black hover:text-gold"
+            className="mb-6 textluxuryry-black hover:text-gold"
           >
             <ArrowLeft className="mr-2" size={16} />
             Back to Home
           </Button>
           
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-playfair font-bold text-luxury-black mb-4 md:mb-0">
+            <h1 className="text-3xl md:text-4xl font-playfair font-bold texluxuryury-black mb-4 md:mb-0">
               <span className="text-gold">{displayCategory}</span> Collection
             </h1>
             
@@ -106,7 +106,7 @@ const CategoryPage = () => {
           
           {filteredWatches.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <p className="text-luxury-charcoal text-lg mb-4">No watches found matching "{searchQuery}"</p>
+              <p className="teluxuryxury-charcoal text-lg mb-4">No watches found matching "{searchQuery}"</p>
               <Button 
                 onClick={() => handleSearch("")}
                 variant="outline"

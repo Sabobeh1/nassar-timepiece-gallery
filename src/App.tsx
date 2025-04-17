@@ -24,10 +24,11 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/luxury" element={<CategoryPage />} />
-            <Route path="/classic" element={<CategoryPage />} />
-            <Route path="/sport" element={<CategoryPage />} />
-            <Route path="/smart" element={<CategoryPage />} />
+            <Route path="/Rolex" element={<CategoryPage />} />
+            <Route path="/Ap" element={<CategoryPage />} />
+            <Route path="/Omega" element={<CategoryPage />} />
+            <Route path="/Patek" element={<CategoryPage />} />
+            <Route path="/Breitling" element={<CategoryPage />} />
             <Route path="/collections" element={<CollectionsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />

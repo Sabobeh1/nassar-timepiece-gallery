@@ -66,7 +66,7 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
         
         <div className="flex justify-between items-center mt-2">
           <p className="text-gray-600 font-montserrat text-sm">{brand}</p>
-          <p className="font-montserrat font-semibold text-luxury-charcoal">{formattedPrice}</p>
+          <p className="font-montserrat font-semibold text-Rolex-charcoal">{formattedPrice}</p>
         </div>
         
         <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">

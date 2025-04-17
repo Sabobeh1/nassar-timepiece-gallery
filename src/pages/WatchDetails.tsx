@@ -38,7 +38,7 @@ const WatchDetails = () => {
 
   if (!watch) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-luxury-cream">
+      <div className="min-h-screen flex items-center justify-center bg-Rolex-cream">
         <div className="animate-pulse text-2xl text-gold font-playfair">Loading...</div>
       </div>
     );
@@ -61,7 +61,7 @@ const WatchDetails = () => {
   const tiktokProfile = "https://www.tiktok.com/@nassar.watches";
   
   // WhatsApp messages
-  const whatsappShareUrl = `https://wa.me/970595858691?text=${encodeURIComponent(`I'm interested in the ${watch.brand} ${watch.name} watch priced at ${formattedPrice}. Product link: ${productUrl}`)}`;
+  const whatsappShareUrl = `https://wa.me/970593484819?text=${encodeURIComponent(`I'm interested in the ${watch.brand} ${watch.name} watch priced at ${formattedPrice}. Product link: ${productUrl}`)}`;
 
   // Handle add to cart
   const handleAddToCart = () => {
@@ -92,7 +92,7 @@ const WatchDetails = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-luxury-cream">
+    <div className="min-h-screen flex flex-col bg-Rolex-cream">
       <Navbar />
       
       <main className="flex-grow py-8">
@@ -101,7 +101,7 @@ const WatchDetails = () => {
           <Button 
             onClick={() => navigate(-1)} 
             variant="outline" 
-            className="mb-6 text-luxury-black hover:text-gold"
+            className="mb-6 text-Rolex-black hover:text-gold"
           >
             <ArrowLeft className="mr-2" size={16} />
             Back
@@ -124,7 +124,7 @@ const WatchDetails = () => {
                 </div>
               )}
               
-              <h1 className="font-playfair text-3xl md:text-4xl font-bold text-luxury-black mb-2">
+              <h1 className="font-playfair text-3xl md:text-4xl font-bold text-Rolex-black mb-2">
                 {watch.name}
               </h1>
               
@@ -132,63 +132,63 @@ const WatchDetails = () => {
                 {watch.brand}
               </h2>
               
-              <p className="font-playfair text-2xl text-luxury-black font-semibold mb-6">
+              <p className="font-playfair text-2xl text-Rolex-black font-semibold mb-6">
                 {formattedPrice}
               </p>
               
               <div className="mb-6">
-                <h3 className="font-montserrat font-semibold text-luxury-charcoal mb-3">Description</h3>
-                <p className="text-luxury-charcoal/80">
+                <h3 className="font-montserrat font-semibold text-Rolex-charcoal mb-3">Description</h3>
+                <p className="text-Rolex-charcoal/80">
                   The {watch.brand} {watch.name} is a masterpiece of horological craftsmanship. 
                   This exquisite timepiece combines elegant design with precision engineering, 
-                  making it perfect for {watch.category === "Luxury" ? "formal occasions" : 
-                                         watch.category === "Sport" ? "active lifestyles" : 
-                                         watch.category === "Classic" ? "everyday wear" : 
+                  making it perfect for {watch.category === "Rolex" ? "formal occasions" : 
+                                         watch.category === "Omega" ? "active lifestyles" : 
+                                         watch.category === "AP" ? "everyday wear" : 
                                          "tech enthusiasts"}.
                 </p>
               </div>
               
               {/* Product Specifications */}
               <div className="mb-6">
-                <h3 className="font-montserrat font-semibold text-luxury-charcoal mb-3">Specifications</h3>
+                <h3 className="font-montserrat font-semibold text-Rolex-charcoal mb-3">Specifications</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Category</p>
+                    <p className="text-Rolex-charcoal/60">Category</p>
                     <p className="font-medium">{watch.category}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Movement</p>
+                    <p className="text-Rolex-charcoal/60">Movement</p>
                     <p className="font-medium">{randomSpecs.movement}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Case Diameter</p>
+                    <p className="text-Rolex-charcoal/60">Case Diameter</p>
                     <p className="font-medium">{randomSpecs.caseDiameter}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Water Resistance</p>
+                    <p className="text-Rolex-charcoal/60">Water Resistance</p>
                     <p className="font-medium">{randomSpecs.waterResistance}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Case Material</p>
+                    <p className="text-Rolex-charcoal/60">Case Material</p>
                     <p className="font-medium">{randomSpecs.material}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Strap Material</p>
+                    <p className="text-Rolex-charcoal/60">Strap Material</p>
                     <p className="font-medium">{randomSpecs.strapMaterial}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Crystal</p>
+                    <p className="text-Rolex-charcoal/60">Crystal</p>
                     <p className="font-medium">{randomSpecs.crystalType}</p>
                   </div>
                   <div className="text-sm">
-                    <p className="text-luxury-charcoal/60">Power Reserve</p>
+                    <p className="text-Rolex-charcoal/60">Power Reserve</p>
                     <p className="font-medium">{randomSpecs.powerReserve}</p>
                   </div>
                 </div>
                 
                 {randomSpecs.functions && (
                   <div className="mt-4 text-sm">
-                    <p className="text-luxury-charcoal/60">Functions</p>
+                    <p className="text-Rolex-charcoal/60">Functions</p>
                     <p className="font-medium">{randomSpecs.functions}</p>
                   </div>
                 )}
@@ -196,7 +196,7 @@ const WatchDetails = () => {
               
               {/* Contact and Share */}
               <div className="mt-8 space-y-4">
-                <h3 className="font-montserrat font-semibold text-luxury-charcoal mb-2">Interested in this timepiece?</h3>
+                <h3 className="font-montserrat font-semibold text-Rolex-charcoal mb-2">Interested in this timepiece?</h3>
                 
                 {/* WhatsApp Contact Button */}
                 <a 

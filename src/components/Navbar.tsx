@@ -128,23 +128,23 @@ export const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center">
-            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-luxury-black">
+            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-Rolex-black">
               <span className="text-gold">NASSAR</span> WATCHES
             </h1>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors">
+            <Link to="/" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Home
             </Link>
-            <Link to="/collections" className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors">
+            <Link to="/collections" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Collections
             </Link>
-            <Link to="/about" className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors">
+            <Link to="/about" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               About
             </Link>
-            <Link to="/contact" className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors">
+            <Link to="/contact" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Contact
             </Link>
           </div>
@@ -152,14 +152,14 @@ export const Navbar = () => {
           {/* Action Icons */}
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
-              <Search className="h-5 w-5 text-luxury-charcoal" />
+              <Search className="h-5 w-5 text-Rolex-charcoal" />
             </Button>
             
             {/* Cart with Dropdown */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
+                  <ShoppingCart className="h-5 w-5 text-Rolex-charcoal" />
                   {totalItems > 0 && (
                     <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {totalItems}
@@ -174,7 +174,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-luxury-charcoal" onClick={toggleMenu}>
+          <button className="md:hidden text-Rolex-charcoal" onClick={toggleMenu}>
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
@@ -187,41 +187,41 @@ export const Navbar = () => {
             <Link 
               to="/"
               onClick={toggleMenu}
-              className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors"
+              className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors"
             >
               Home
             </Link>
             <Link 
               to="/collections"
               onClick={toggleMenu}
-              className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors"
+              className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors"
             >
               Collections
             </Link>
             <Link 
               to="/about"
               onClick={toggleMenu}
-              className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors"
+              className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors"
             >
               About
             </Link>
             <Link 
               to="/contact"
               onClick={toggleMenu}
-              className="font-montserrat text-luxury-charcoal hover:text-gold transition-colors"
+              className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors"
             >
               Contact
             </Link>
             <div className="flex space-x-4 pt-2">
               <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
-                <Search className="h-5 w-5 text-luxury-charcoal" />
+                <Search className="h-5 w-5 text-Rolex-charcoal" />
               </Button>
               
               {/* Mobile Cart Button */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
+                    <ShoppingCart className="h-5 w-5 text-Rolex-charcoal" />
                     {totalItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                         {totalItems}
@@ -264,7 +264,7 @@ export const Navbar = () => {
             <Button 
               variant="outline" 
               onClick={toggleAdvancedSearch}
-              className="w-full flex justify-between items-center text-luxury-charcoal"
+              className="w-full flex justify-between items-center text-Rolex-charcoal"
             >
               Advanced Search
               <ChevronDown className={`ml-2 h-4 w-4 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`} />
@@ -295,7 +295,7 @@ export const Navbar = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <Label>Price Range</Label>
-                  <span className="text-sm text-luxury-charcoal">
+                  <span className="text-sm text-Rolex-charcoal">
                     ${priceRange[0]} - ${priceRange[1]}
                   </span>
                 </div>
@@ -350,7 +350,7 @@ export const Navbar = () => {
           {searchQuery.trim() !== "" || showAdvancedSearch ? (
             <div className="mt-4">
               {searchResults.length === 0 ? (
-                <p className="text-center py-8 text-luxury-charcoal">No watches found matching your criteria</p>
+                <p className="text-center py-8 text-Rolex-charcoal">No watches found matching your criteria</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {searchResults.map(watch => (
@@ -362,8 +362,8 @@ export const Navbar = () => {
                       <div className="aspect-square overflow-hidden rounded-md mb-2">
                         <img src={watch.images[0]} alt={watch.name} className="w-full h-full object-cover" />
                       </div>
-                      <h3 className="font-playfair font-bold text-luxury-black">{watch.name}</h3>
-                      <p className="text-luxury-charcoal text-sm">{watch.brand}</p>
+                      <h3 className="font-playfair font-bold text-Rolex-black">{watch.name}</h3>
+                      <p className="text-Rolex-charcoal text-sm">{watch.brand}</p>
                       <p className="text-gold font-semibold">${watch.price.toLocaleString()}</p>
                     </div>
                   ))}
