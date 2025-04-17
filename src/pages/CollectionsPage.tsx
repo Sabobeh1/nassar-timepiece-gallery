@@ -1,11 +1,12 @@
 
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getWatchesByCategory } from "@/data/watches";
 
 const CollectionsPage = () => {
+  const navigate = useNavigate();
   const luxuryWatches = getWatchesByCategory("Luxury");
   const classicWatches = getWatchesByCategory("Classic");
   const sportWatches = getWatchesByCategory("Sport");
@@ -14,6 +15,11 @@ const CollectionsPage = () => {
   useEffect(() => {
     document.title = "Collections | Nassar Watches";
   }, []);
+
+  // Handler for category navigation
+  const handleViewCollection = (category: string) => {
+    navigate(`/${category.toLowerCase()}`, { state: { category } });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-luxury-cream">
@@ -50,12 +56,12 @@ const CollectionsPage = () => {
                   These premium timepieces blend sophisticated design with exceptional craftsmanship,
                   featuring precious materials and meticulous attention to detail.
                 </p>
-                <Link 
-                  to="/luxury"
+                <button 
+                  onClick={() => handleViewCollection("Luxury")}
                   className="inline-block bg-gold hover:bg-gold/90 text-white py-2 px-6 rounded font-montserrat transition-colors"
                 >
                   View Collection
-                </Link>
+                </button>
               </div>
             </div>
             
@@ -78,12 +84,12 @@ const CollectionsPage = () => {
                   These versatile watches offer enduring elegance for everyday wear,
                   with clean lines and thoughtful details that stand the test of time.
                 </p>
-                <Link 
-                  to="/classic"
+                <button 
+                  onClick={() => handleViewCollection("Classic")}
                   className="inline-block bg-gold hover:bg-gold/90 text-white py-2 px-6 rounded font-montserrat transition-colors"
                 >
                   View Collection
-                </Link>
+                </button>
               </div>
             </div>
             
@@ -106,12 +112,12 @@ const CollectionsPage = () => {
                   Built for adventure and active lifestyles, these watches feature enhanced durability,
                   water resistance, and specialized functions for various sporting activities.
                 </p>
-                <Link 
-                  to="/sport"
+                <button 
+                  onClick={() => handleViewCollection("Sport")}
                   className="inline-block bg-gold hover:bg-gold/90 text-white py-2 px-6 rounded font-montserrat transition-colors"
                 >
                   View Collection
-                </Link>
+                </button>
               </div>
             </div>
             
@@ -134,12 +140,12 @@ const CollectionsPage = () => {
                   These connected timepieces offer fitness tracking, notifications, and other smart features
                   while maintaining the sophisticated aesthetic of a luxury watch.
                 </p>
-                <Link 
-                  to="/smart"
+                <button 
+                  onClick={() => handleViewCollection("Smart")}
                   className="inline-block bg-gold hover:bg-gold/90 text-white py-2 px-6 rounded font-montserrat transition-colors"
                 >
                   View Collection
-                </Link>
+                </button>
               </div>
             </div>
           </div>

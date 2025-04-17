@@ -1,12 +1,13 @@
 
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
 import { getWatchesByCategory } from "@/data/watches";
 
 const Index = () => {
+  const navigate = useNavigate();
   // Get watches by category for the category cards
   const luxuryWatches = getWatchesByCategory("Luxury");
   const classicWatches = getWatchesByCategory("Classic");
@@ -17,6 +18,11 @@ const Index = () => {
   useEffect(() => {
     document.title = "Nassar Watches | Luxury Timepieces";
   }, []);
+
+  // Handler for category navigation
+  const handleCategoryClick = (category: string) => {
+    navigate(`/${category.toLowerCase()}`, { state: { category } });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-luxury-cream">
@@ -51,12 +57,12 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-playfair font-bold text-white mb-2">Luxury</h3>
                   <p className="text-sm text-gray-200 mb-4">Our premium selection of high-end timepieces</p>
-                  <Link 
-                    to="/luxury"
+                  <button 
+                    onClick={() => handleCategoryClick("Luxury")}
                     className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
                   >
                     Explore Collection
-                  </Link>
+                  </button>
                 </div>
               </div>
               
@@ -70,12 +76,12 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-playfair font-bold text-white mb-2">Classic</h3>
                   <p className="text-sm text-gray-200 mb-4">Timeless designs that never go out of style</p>
-                  <Link 
-                    to="/classic"
+                  <button 
+                    onClick={() => handleCategoryClick("Classic")}
                     className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
                   >
                     Explore Collection
-                  </Link>
+                  </button>
                 </div>
               </div>
               
@@ -89,12 +95,12 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-playfair font-bold text-white mb-2">Sport</h3>
                   <p className="text-sm text-gray-200 mb-4">Rugged timepieces for the active lifestyle</p>
-                  <Link 
-                    to="/sport"
+                  <button 
+                    onClick={() => handleCategoryClick("Sport")}
                     className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
                   >
                     Explore Collection
-                  </Link>
+                  </button>
                 </div>
               </div>
               
@@ -108,12 +114,12 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-playfair font-bold text-white mb-2">Smart</h3>
                   <p className="text-sm text-gray-200 mb-4">Modern technology meets elegant design</p>
-                  <Link 
-                    to="/smart"
+                  <button 
+                    onClick={() => handleCategoryClick("Smart")}
                     className="inline-block bg-gold/80 hover:bg-gold text-white py-2 px-4 rounded text-sm font-montserrat transition-colors"
                   >
                     Explore Collection
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

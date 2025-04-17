@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,6 +8,7 @@ import WatchCard from "@/components/WatchCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getWatchesByCategory } from "@/data/watches";
+import { searchWatches } from "@/utils/searchUtils";
 
 interface Watch {
   id: string;
@@ -21,19 +22,24 @@ interface Watch {
 
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [watches, setWatches] = useState<Watch[]>([]);
   const [filteredWatches, setFilteredWatches] = useState<Watch[]>([]);
   
   useEffect(() => {
-    if (!category) {
+    // Get category from URL params or from state if passed via Link
+    const categoryFromState = location.state?.category;
+    const categoryToUse = category || categoryFromState;
+    
+    if (!categoryToUse) {
       navigate("/");
       return;
     }
     
     // Capitalize first letter for display and data fetching
-    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+    const formattedCategory = categoryToUse.charAt(0).toUpperCase() + categoryToUse.slice(1).toLowerCase();
     
     // Set page title
     document.title = `${formattedCategory} Watches | Nassar Watches`;
@@ -42,9 +48,9 @@ const CategoryPage = () => {
     const categoryWatches = getWatchesByCategory(formattedCategory);
     setWatches(categoryWatches);
     setFilteredWatches(categoryWatches);
-  }, [category, navigate]);
+  }, [category, navigate, location.state]);
   
-  // Search function using fuzzy search algorithm
+  // Search function using the imported searchWatches utility
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     
@@ -53,28 +59,16 @@ const CategoryPage = () => {
       return;
     }
     
-    // Simple fuzzy search implementation
-    const searchTerms = query.toLowerCase().split(' ');
-    
-    const filtered = watches.filter(watch => {
-      const nameAndBrand = `${watch.name} ${watch.brand}`.toLowerCase();
-      
-      // Check if all search terms are included in the watch name/brand
-      return searchTerms.every(term => {
-        // Allow for partial matches with a minimum of 2 characters
-        if (term.length < 2) return true;
-        
-        return nameAndBrand.includes(term);
-      });
-    });
-    
+    const filtered = searchWatches(query, watches);
     setFilteredWatches(filtered);
   };
   
   // Format category name for display
   const displayCategory = category 
     ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase()
-    : '';
+    : location.state?.category
+      ? location.state.category.charAt(0).toUpperCase() + location.state.category.slice(1).toLowerCase()
+      : '';
 
   return (
     <div className="min-h-screen flex flex-col bg-luxury-cream">
