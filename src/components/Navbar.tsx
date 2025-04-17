@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import CartDropdown from "./CartDropdown";
 import { useCart } from "@/context/CartContext";
@@ -12,11 +12,22 @@ import { searchWatches } from "@/utils/searchUtils";
 import { watches } from "@/data/watches";
 import WatchCard from "./WatchCard";
 
+// Define the Watch interface to match the one used in data/watches.ts
+interface Watch {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  images: string[];
+  category: string;
+  isNew?: boolean;
+}
+
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState(watches);
+  const [searchResults, setSearchResults] = useState<Watch[]>([]);
   const { totalItems } = useCart();
   const navigate = useNavigate();
 
@@ -176,6 +187,9 @@ export const Navbar = () => {
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-playfair">Search Watches</DialogTitle>
+            <DialogDescription>
+              Enter watch name or brand to find the perfect timepiece
+            </DialogDescription>
           </DialogHeader>
           <div className="relative my-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
