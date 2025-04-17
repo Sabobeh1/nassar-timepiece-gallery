@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Minus, Plus, MessageCircle, ShoppingBag, X } from 'lucide-react';
+import { Minus, Plus, MessageCircle, ShoppingBag, X, Phone } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -34,6 +34,38 @@ const CartDropdown = () => {
     toast({
       title: "Question about product",
       description: `Opening WhatsApp to ask about ${productName}`,
+    });
+  };
+
+  // Generate cart items list for WhatsApp message
+  const generateCartItemsList = () => {
+    let itemsList = "I would like to purchase the following items:\n\n";
+    cart.forEach((item, index) => {
+      itemsList += `${index + 1}. ${item.brand} ${item.name} - ${new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(item.price)} x ${item.quantity}\n`;
+    });
+    
+    itemsList += `\nTotal: ${new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(totalPrice)}`;
+    
+    return itemsList;
+  };
+
+  const handleWhatsappCheckout = () => {
+    const whatsappUrl = `https://wa.me/970595858691?text=${encodeURIComponent(generateCartItemsList())}`;
+    window.open(whatsappUrl, '_blank');
+    
+    toast({
+      title: "Proceeding to WhatsApp",
+      description: "Opening WhatsApp to complete your purchase",
     });
   };
 
@@ -123,15 +155,11 @@ const CartDropdown = () => {
         
         <div className="space-y-2">
           <Button 
-            className="w-full bg-gold hover:bg-gold/90 text-white"
-            onClick={() => {
-              toast({
-                title: "Checkout",
-                description: "This would proceed to checkout in a real store",
-              });
-            }}
+            className="w-full bg-[#25D366] hover:bg-[#22c55e] text-white flex items-center justify-center"
+            onClick={handleWhatsappCheckout}
           >
-            Checkout
+            <Phone size={18} className="mr-2" />
+            Contact us on WhatsApp to checkout
           </Button>
           
           <Link to="/">

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 // Define the Watch type that matches our data structure
 export interface CartWatch {
@@ -23,8 +23,28 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Helper function to get cart from localStorage
+const getCartFromStorage = (): CartWatch[] => {
+  if (typeof window === 'undefined') return [];
+  
+  const storedCart = localStorage.getItem('nassar-watches-cart');
+  return storedCart ? JSON.parse(storedCart) : [];
+};
+
+// Helper function to save cart to localStorage
+const saveCartToStorage = (cart: CartWatch[]) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('nassar-watches-cart', JSON.stringify(cart));
+  }
+};
+
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartWatch[]>([]);
+  const [cart, setCart] = useState<CartWatch[]>(getCartFromStorage());
+
+  // Save to localStorage whenever cart changes
+  useEffect(() => {
+    saveCartToStorage(cart);
+  }, [cart]);
 
   const addToCart = (watch: Omit<CartWatch, 'quantity'>) => {
     setCart(prevCart => {

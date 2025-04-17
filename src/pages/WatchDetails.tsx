@@ -1,13 +1,15 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Facebook, Instagram, ArrowLeft, Phone } from "lucide-react";
+import { Facebook, Instagram, ArrowLeft, Phone, ShoppingCart } from "lucide-react";
 import TikTokIcon from "@/components/icons/TikTokIcon";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ImageGallery from "@/components/ImageGallery";
 import { Button } from "@/components/ui/button";
 import { watches } from "@/data/watches";
+import { useCart } from "@/context/CartContext";
+import { useToast } from "@/components/ui/use-toast";
 import { 
   Dialog,
   DialogContent,
@@ -20,6 +22,8 @@ const WatchDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [watch, setWatch] = useState<any>(null);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   
   useEffect(() => {
     // Find the watch by ID
@@ -56,6 +60,23 @@ const WatchDetails = () => {
   const instagramProfile = "https://www.instagram.com/nassar_watches99/";
   const tiktokProfile = "https://www.tiktok.com/@nassar.watches";
   const whatsappShareUrl = `https://wa.me/970595858691?text=${encodeURIComponent(shareMessage)} ${encodeURIComponent(productUrl)}`;
+  const whatsappCheckoutUrl = `https://wa.me/970595858691?text=${encodeURIComponent(`I'm interested in the ${watch.brand} ${watch.name} watch priced at ${formattedPrice}. Could you provide more information about purchasing this watch?`)}`;
+
+  // Handle add to cart
+  const handleAddToCart = () => {
+    addToCart({
+      id: watch.id,
+      name: watch.name,
+      brand: watch.brand,
+      price: watch.price,
+      image: watch.images[0],
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${watch.brand} ${watch.name} has been added to your cart`,
+    });
+  };
 
   // Random product details
   const randomSpecs = {
@@ -113,6 +134,15 @@ const WatchDetails = () => {
               <p className="font-playfair text-2xl text-luxury-black font-semibold mb-6">
                 {formattedPrice}
               </p>
+              
+              {/* Add to Cart Button */}
+              <Button 
+                onClick={handleAddToCart}
+                className="w-full mb-4 bg-gold hover:bg-gold/90 text-white font-montserrat"
+              >
+                <ShoppingCart className="mr-2" size={18} />
+                Add to Cart
+              </Button>
               
               <div className="mb-6">
                 <h3 className="font-montserrat font-semibold text-luxury-charcoal mb-3">Description</h3>
