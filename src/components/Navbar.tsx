@@ -3,9 +3,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import CartDropdown from "./CartDropdown";
+import { useCart } from "@/context/CartContext";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { totalItems } = useCart();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -45,12 +49,23 @@ export const Navbar = () => {
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5 text-luxury-charcoal" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
-              <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                0
-              </span>
-            </Button>
+            
+            {/* Cart with Dropdown */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="p-0 w-80">
+                <CartDropdown />
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,12 +114,23 @@ export const Navbar = () => {
               <Button variant="ghost" size="icon">
                 <User className="h-5 w-5 text-luxury-charcoal" />
               </Button>
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
-                <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  0
-                </span>
-              </Button>
+              
+              {/* Mobile Cart Button */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="h-5 w-5 text-luxury-charcoal" />
+                    {totalItems > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {totalItems}
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="p-0 w-80">
+                  <CartDropdown />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>

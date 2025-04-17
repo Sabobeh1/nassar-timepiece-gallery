@@ -1,8 +1,11 @@
 
 import { Link } from "react-router-dom";
-import ImageGallery from "./ImageGallery";
-import { Facebook, Instagram, Phone } from "lucide-react";
+import { Facebook, Instagram, Phone, ShoppingCart } from "lucide-react";
 import TikTokIcon from "./icons/TikTokIcon";
+import ImageGallery from "./ImageGallery";
+import { useCart } from "@/context/CartContext";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 interface WatchCardProps {
   id: string;
@@ -15,6 +18,9 @@ interface WatchCardProps {
 }
 
 const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: WatchCardProps) => {
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+  
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -31,6 +37,21 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
   const instagramProfile = "https://www.instagram.com/nassar_watches99/";
   const tiktokProfile = "https://www.tiktok.com/@nassar.watches";
   const whatsappShareUrl = `https://wa.me/970595858691?text=${encodeURIComponent(shareMessage)} ${encodeURIComponent(productUrl)}`;
+
+  const handleAddToCart = () => {
+    addToCart({
+      id,
+      name,
+      brand,
+      price,
+      image: images[0],
+    });
+    
+    toast({
+      title: "Added to cart",
+      description: `${brand} ${name} has been added to your cart`,
+    });
+  };
 
   return (
     <div className="group bg-white rounded-md shadow-sm hover:shadow-md transition duration-300 overflow-hidden">
@@ -99,12 +120,22 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
           </a>
         </div>
         
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <Link 
-            to={`/watch/${id}`}
-            className="block w-full text-center py-2 font-montserrat text-sm font-medium bg-luxury-cream text-luxury-black hover:bg-gold hover:text-white transition-colors rounded"
+        <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+          <Button 
+            onClick={handleAddToCart}
+            className="flex-1 bg-gold hover:bg-gold/90 text-white font-montserrat text-sm"
           >
-            View Details
+            <ShoppingCart className="h-4 w-4 mr-1" />
+            Add to Cart
+          </Button>
+          
+          <Link to={`/watch/${id}`} className="flex-1">
+            <Button 
+              variant="outline"
+              className="w-full border-gold text-gold hover:bg-gold/10 font-montserrat text-sm"
+            >
+              View Details
+            </Button>
           </Link>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WatchDetails from "./pages/WatchDetails";
+import { CartProvider } from "./context/CartContext";
 
 const queryClient = new QueryClient();
 
@@ -15,18 +16,20 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/luxury" element={<Index />} />
-          <Route path="/classic" element={<Index />} />
-          <Route path="/sport" element={<Index />} />
-          <Route path="/smart" element={<Index />} />
-          <Route path="/watch/:id" element={<WatchDetails />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/luxury" element={<Index />} />
+            <Route path="/classic" element={<Index />} />
+            <Route path="/sport" element={<Index />} />
+            <Route path="/smart" element={<Index />} />
+            <Route path="/watch/:id" element={<WatchDetails />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
