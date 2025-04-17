@@ -27,8 +27,9 @@ const CartDropdown = () => {
     );
   }
   
-  const handleAskQuestion = (productName: string) => {
-    const whatsappUrl = `https://wa.me/970595858691?text=I have a question about the ${productName} watch`;
+  const handleAskQuestion = (productId: string, productName: string) => {
+    const productUrl = `${window.location.origin}/watch/${productId}`;
+    const whatsappUrl = `https://wa.me/970595858691?text=I have a question about the ${productName} watch. Product link: ${productUrl}`;
     window.open(whatsappUrl, '_blank');
     
     toast({
@@ -37,16 +38,17 @@ const CartDropdown = () => {
     });
   };
 
-  // Generate cart items list for WhatsApp message
+  // Generate cart items list for WhatsApp message with product links
   const generateCartItemsList = () => {
     let itemsList = "I would like to purchase the following items:\n\n";
     cart.forEach((item, index) => {
+      const productUrl = `${window.location.origin}/watch/${item.id}`;
       itemsList += `${index + 1}. ${item.brand} ${item.name} - ${new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(item.price)} x ${item.quantity}\n`;
+      }).format(item.price)} x ${item.quantity}\nProduct link: ${productUrl}\n\n`;
     });
     
     itemsList += `\nTotal: ${new Intl.NumberFormat('en-US', {
@@ -129,7 +131,7 @@ const CartDropdown = () => {
               </div>
               
               <button
-                onClick={() => handleAskQuestion(item.name)}
+                onClick={() => handleAskQuestion(item.id, item.name)}
                 className="flex items-center text-xs text-gold hover:underline mt-2"
               >
                 <MessageCircle size={14} className="mr-1" />
@@ -159,7 +161,7 @@ const CartDropdown = () => {
             onClick={handleWhatsappCheckout}
           >
             <Phone size={18} className="mr-2" />
-            Contact us on WhatsApp to checkout
+            <span className="text-sm sm:text-base">Contact us on WhatsApp to checkout</span>
           </Button>
           
           <Link to="/">

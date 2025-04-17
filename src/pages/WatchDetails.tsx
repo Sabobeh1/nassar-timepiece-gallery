@@ -59,8 +59,9 @@ const WatchDetails = () => {
   const facebookShareUrl = `https://www.facebook.com/profile.php?id=61555817681896&message=${encodeURIComponent(shareMessage)} ${encodeURIComponent(productUrl)}`;
   const instagramProfile = "https://www.instagram.com/nassar_watches99/";
   const tiktokProfile = "https://www.tiktok.com/@nassar.watches";
-  const whatsappShareUrl = `https://wa.me/970595858691?text=${encodeURIComponent(shareMessage)} ${encodeURIComponent(productUrl)}`;
-  const whatsappCheckoutUrl = `https://wa.me/970595858691?text=${encodeURIComponent(`I'm interested in the ${watch.brand} ${watch.name} watch priced at ${formattedPrice}. Could you provide more information about purchasing this watch?`)}`;
+  
+  // WhatsApp messages
+  const whatsappShareUrl = `https://wa.me/970595858691?text=${encodeURIComponent(`I'm interested in the ${watch.brand} ${watch.name} watch priced at ${formattedPrice}. Product link: ${productUrl}`)}`;
 
   // Handle add to cart
   const handleAddToCart = () => {
@@ -134,15 +135,6 @@ const WatchDetails = () => {
               <p className="font-playfair text-2xl text-luxury-black font-semibold mb-6">
                 {formattedPrice}
               </p>
-              
-              {/* Add to Cart Button */}
-              <Button 
-                onClick={handleAddToCart}
-                className="w-full mb-4 bg-gold hover:bg-gold/90 text-white font-montserrat"
-              >
-                <ShoppingCart className="mr-2" size={18} />
-                Add to Cart
-              </Button>
               
               <div className="mb-6">
                 <h3 className="font-montserrat font-semibold text-luxury-charcoal mb-3">Description</h3>
@@ -270,7 +262,10 @@ const WatchDetails = () => {
                         <Button
                           onClick={() => {
                             navigator.clipboard.writeText(productUrl);
-                            // You would usually show a toast notification here
+                            toast({
+                              title: "Link copied",
+                              description: "The product link has been copied to your clipboard",
+                            });
                           }}
                           className="rounded-l-none"
                         >
@@ -280,6 +275,15 @@ const WatchDetails = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
+                
+                {/* Add to Cart Button - moved to this position as requested */}
+                <Button 
+                  onClick={handleAddToCart}
+                  className="w-full bg-gold hover:bg-gold/90 text-white font-montserrat"
+                >
+                  <ShoppingCart className="mr-2" size={18} />
+                  Add to Cart
+                </Button>
               </div>
             </div>
           </div>

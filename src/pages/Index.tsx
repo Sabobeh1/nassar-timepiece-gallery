@@ -4,11 +4,10 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
-import CategorySection from "@/components/CategorySection";
-import { watches, getWatchesByCategory } from "@/data/watches";
+import { getWatchesByCategory } from "@/data/watches";
 
 const Index = () => {
-  // Get watches by category
+  // Get watches by category for the category cards
   const luxuryWatches = getWatchesByCategory("Luxury");
   const classicWatches = getWatchesByCategory("Classic");
   const sportWatches = getWatchesByCategory("Sport");
@@ -120,12 +119,6 @@ const Index = () => {
             </div>
           </div>
         </section>
-        
-        {/* Category Sections */}
-        <CategorySection title="Luxury" watches={luxuryWatches} />
-        <CategorySection title="Classic" watches={classicWatches} />
-        <CategorySection title="Sport" watches={sportWatches} />
-        <CategorySection title="Smart" watches={smartWatches} />
       </main>
       
       <Footer />

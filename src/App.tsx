@@ -5,6 +5,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import CategoryPage from "./pages/CategoryPage";
+import CollectionsPage from "./pages/CollectionsPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import WatchDetails from "./pages/WatchDetails";
 import { CartProvider } from "./context/CartContext";
@@ -20,10 +24,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/luxury" element={<Index />} />
-            <Route path="/classic" element={<Index />} />
-            <Route path="/sport" element={<Index />} />
-            <Route path="/smart" element={<Index />} />
+            <Route path="/luxury" element={<CategoryPage />} />
+            <Route path="/classic" element={<CategoryPage />} />
+            <Route path="/sport" element={<CategoryPage />} />
+            <Route path="/smart" element={<CategoryPage />} />
+            <Route path="/collections" element={<CollectionsPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/watch/:id" element={<WatchDetails />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
