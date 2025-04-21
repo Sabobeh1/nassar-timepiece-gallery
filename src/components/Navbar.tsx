@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/AuthContext";
 
 // Define the Watch interface to match the one used in data/watches.ts
 interface Watch {
@@ -36,6 +37,7 @@ export const Navbar = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [sortOption, setSortOption] = useState<string>("relevance");
   const { totalItems } = useCart();
+  const { user, signOut, isAdmin } = useAuth(); // Add useAuth hook
   const navigate = useNavigate();
 
   // Get min and max price from watches data
@@ -123,6 +125,14 @@ export const Navbar = () => {
     performSearch();
   };
 
+  const handleAdminLogin = () => {
+    navigate('/admin/login');
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
   return (
     <nav className="w-full bg-white shadow-sm py-4 sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -171,6 +181,25 @@ export const Navbar = () => {
                 <CartDropdown />
               </PopoverContent>
             </Popover>
+
+            {/* Authentication Buttons */}
+            {isAdmin ? (
+              <Button 
+                variant="destructive" 
+                onClick={handleSignOut}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <Button 
+                variant="outline" 
+                onClick={handleAdminLogin}
+                className="flex items-center gap-2"
+              >
+                <LogIn className="h-4 w-4" /> Admin Sign In
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -212,6 +241,7 @@ export const Navbar = () => {
             >
               Contact
             </Link>
+            
             <div className="flex space-x-4 pt-2">
               <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
                 <Search className="h-5 w-5 text-Rolex-charcoal" />
@@ -233,6 +263,25 @@ export const Navbar = () => {
                   <CartDropdown />
                 </PopoverContent>
               </Popover>
+
+              {/* Mobile Authentication Buttons */}
+              {isAdmin ? (
+                <Button 
+                  variant="destructive" 
+                  onClick={handleSignOut}
+                  className="bg-red-500 hover:bg-red-600 w-full"
+                >
+                  Sign Out
+                </Button>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  onClick={handleAdminLogin}
+                  className="flex items-center gap-2 w-full"
+                >
+                  <LogIn className="h-4 w-4" /> Admin Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
