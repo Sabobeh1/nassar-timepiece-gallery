@@ -24,6 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event, currentSession?.user?.email);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check initial session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", currentSession?.user?.email);
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       if (currentSession?.user) {
@@ -49,21 +51,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const checkAdminStatus = async (userId: string) => {
-    const { data, error } = await supabase.rpc('is_admin', { user_id: userId });
-    if (!error && data) {
-      setIsAdmin(data);
+    try {
+      const { data, error } = await supabase.rpc('is_admin', { user_id: userId });
+      console.log("Admin status check:", data, error);
+      if (!error && data !== null) {
+        setIsAdmin(data);
+      } else {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error("Exception checking admin status:", error);
+      setIsAdmin(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("Attempting sign in for:", email);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("Sign in result:", data?.user?.email, error);
     if (error) throw error;
   };
 
   const signOut = async () => {
+    console.log("Signing out");
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    navigate('/admin/login');
   };
 
   return (

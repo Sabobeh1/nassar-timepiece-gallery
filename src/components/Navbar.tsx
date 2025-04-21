@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn, Settings, LayoutDashboard, LogOut } from "lucide-react";
@@ -142,6 +141,7 @@ export const Navbar = () => {
         title: "Signed out successfully",
         description: "You have been signed out of your account",
       });
+      navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
       toast({
@@ -211,15 +211,17 @@ export const Navbar = () => {
             </Popover>
 
             {/* Authentication Buttons */}
-            {isAdmin ? (
+            {user ? (
               <div className="flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  onClick={handleAdminDashboard}
-                  className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark"
-                >
-                  <LayoutDashboard className="h-4 w-4" /> Dashboard
-                </Button>
+                {isAdmin && (
+                  <Button 
+                    variant="outline" 
+                    onClick={handleAdminDashboard}
+                    className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark"
+                  >
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Button>
+                )}
                 <Button 
                   variant="destructive" 
                   onClick={handleSignOut}
@@ -311,10 +313,12 @@ export const Navbar = () => {
                   <CartDropdown />
                 </PopoverContent>
               </Popover>
-
-              {/* Mobile Authentication Buttons */}
-              {isAdmin ? (
-                <div className="flex flex-col space-y-2 w-full">
+            </div>
+            
+            {/* Mobile Authentication Buttons */}
+            {user ? (
+              <div className="flex flex-col space-y-2 w-full">
+                {isAdmin && (
                   <Button 
                     variant="outline" 
                     onClick={handleAdminDashboard}
@@ -322,24 +326,24 @@ export const Navbar = () => {
                   >
                     <LayoutDashboard className="h-4 w-4" /> Dashboard
                   </Button>
-                  <Button 
-                    variant="destructive" 
-                    onClick={handleSignOut}
-                    className="bg-red-500 hover:bg-red-600 flex items-center gap-2 w-full"
-                  >
-                    <LogOut className="h-4 w-4" /> Sign Out
-                  </Button>
-                </div>
-              ) : (
+                )}
                 <Button 
-                  variant="outline" 
-                  onClick={handleAdminLogin}
-                  className="flex items-center gap-2 w-full"
+                  variant="destructive" 
+                  onClick={handleSignOut}
+                  className="bg-red-500 hover:bg-red-600 flex items-center gap-2 w-full"
                 >
-                  <LogIn className="h-4 w-4" /> Admin Sign In
+                  <LogOut className="h-4 w-4" /> Sign Out
                 </Button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                onClick={handleAdminLogin}
+                className="flex items-center gap-2 w-full"
+              >
+                <LogIn className="h-4 w-4" /> Admin Sign In
+              </Button>
+            )}
           </div>
         </div>
       )}
