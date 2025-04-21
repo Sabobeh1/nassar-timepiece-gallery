@@ -14,7 +14,10 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import WatchDetails from "./pages/WatchDetails";
 import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard"; // We'll create this next
+import AdminDashboard from "./pages/AdminDashboard";
+
+// Create a new QueryClient instance
+const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
