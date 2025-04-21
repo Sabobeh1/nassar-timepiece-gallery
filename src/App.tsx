@@ -14,8 +14,7 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import WatchDetails from "./pages/WatchDetails";
 import AdminLogin from "./pages/AdminLogin";
-
-const queryClient = new QueryClient();
+import AdminDashboard from "./pages/AdminDashboard"; // We'll create this next
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -37,6 +36,7 @@ const App = () => (
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/watch/:id" element={<WatchDetails />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>

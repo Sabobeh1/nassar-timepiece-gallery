@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -157,6 +157,15 @@ export const Navbar = () => {
             <Link to="/contact" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Contact
             </Link>
+            {isAdmin && (
+              <Link 
+                to="/admin/dashboard" 
+                className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
+              >
+                <Settings className="h-4 w-4" />
+                Admin Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Action Icons */}
@@ -241,6 +250,17 @@ export const Navbar = () => {
             >
               Contact
             </Link>
+            
+            {isAdmin && (
+              <Link 
+                to="/admin/dashboard"
+                onClick={toggleMenu}
+                className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
+              >
+                <Settings className="h-4 w-4" />
+                Admin Dashboard
+              </Link>
+            )}
             
             <div className="flex space-x-4 pt-2">
               <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
