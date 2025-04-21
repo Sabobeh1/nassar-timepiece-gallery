@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast"; // Fixed import from hooks directory
+import { useToast } from "@/hooks/use-toast"; // Correct import from hooks directory
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "lucide-react";
 
@@ -22,7 +22,11 @@ export default function AdminLogin() {
     
     try {
       await signIn(email, password);
-      navigate('/'); // Redirect to home after successful login
+      toast({
+        title: "Login successful",
+        description: "You are now signed in as an admin",
+      });
+      navigate('/admin/dashboard'); // Redirect to admin dashboard after successful login
     } catch (error) {
       toast({
         variant: "destructive",

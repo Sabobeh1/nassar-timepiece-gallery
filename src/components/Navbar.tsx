@@ -1,6 +1,7 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn, Settings } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn, Settings, LayoutDashboard, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -9,12 +10,12 @@ import CartDropdown from "./CartDropdown";
 import { useCart } from "@/context/CartContext";
 import { searchWatches } from "@/utils/searchUtils";
 import { watches } from "@/data/watches";
-import WatchCard from "./WatchCard";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 // Define the Watch interface to match the one used in data/watches.ts
 interface Watch {
@@ -37,7 +38,8 @@ export const Navbar = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [sortOption, setSortOption] = useState<string>("relevance");
   const { totalItems } = useCart();
-  const { user, signOut, isAdmin } = useAuth(); // Add useAuth hook
+  const { user, signOut, isAdmin } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   // Get min and max price from watches data
@@ -129,8 +131,25 @@ export const Navbar = () => {
     navigate('/admin/login');
   };
 
-  const handleSignOut = () => {
-    signOut();
+  const handleAdminDashboard = () => {
+    navigate('/admin/dashboard');
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Signed out successfully",
+        description: "You have been signed out of your account",
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "There was a problem signing out",
+      });
+    }
   };
 
   return (
@@ -162,7 +181,7 @@ export const Navbar = () => {
                 to="/admin/dashboard" 
                 className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
               >
-                <Settings className="h-4 w-4" />
+                <LayoutDashboard className="h-4 w-4" />
                 Admin Dashboard
               </Link>
             )}
@@ -193,13 +212,22 @@ export const Navbar = () => {
 
             {/* Authentication Buttons */}
             {isAdmin ? (
-              <Button 
-                variant="destructive" 
-                onClick={handleSignOut}
-                className="bg-red-500 hover:bg-red-600"
-              >
-                Sign Out
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  onClick={handleAdminDashboard}
+                  className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark"
+                >
+                  <LayoutDashboard className="h-4 w-4" /> Dashboard
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleSignOut}
+                  className="bg-red-500 hover:bg-red-600 flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" /> Sign Out
+                </Button>
+              </div>
             ) : (
               <Button 
                 variant="outline" 
@@ -257,7 +285,7 @@ export const Navbar = () => {
                 onClick={toggleMenu}
                 className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
               >
-                <Settings className="h-4 w-4" />
+                <LayoutDashboard className="h-4 w-4" />
                 Admin Dashboard
               </Link>
             )}
@@ -286,13 +314,22 @@ export const Navbar = () => {
 
               {/* Mobile Authentication Buttons */}
               {isAdmin ? (
-                <Button 
-                  variant="destructive" 
-                  onClick={handleSignOut}
-                  className="bg-red-500 hover:bg-red-600 w-full"
-                >
-                  Sign Out
-                </Button>
+                <div className="flex flex-col space-y-2 w-full">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleAdminDashboard}
+                    className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark w-full"
+                  >
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleSignOut}
+                    className="bg-red-500 hover:bg-red-600 flex items-center gap-2 w-full"
+                  >
+                    <LogOut className="h-4 w-4" /> Sign Out
+                  </Button>
+                </div>
               ) : (
                 <Button 
                   variant="outline" 
