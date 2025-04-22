@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Search, ShoppingCart, ChevronDown, ArrowUpDown, ArrowDown, ArrowUp, LogIn, Settings, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, Search, ShoppingCart, LogIn, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -11,7 +11,6 @@ import { searchWatches } from "@/utils/searchUtils";
 import { watches } from "@/data/watches";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -37,9 +36,9 @@ export const Navbar = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [sortOption, setSortOption] = useState<string>("relevance");
   const { totalItems } = useCart();
-  const { user, signOut, isAdmin } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   // Get min and max price from watches data
   const maxPrice = Math.max(...watches.map(watch => watch.price));
@@ -176,14 +175,18 @@ export const Navbar = () => {
             <Link to="/contact" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Contact
             </Link>
-            {isAdmin && (
-              <Link 
-                to="/admin/dashboard" 
-                className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                Admin Dashboard
-              </Link>
+            {user && (
+              <div className="flex items-center gap-4">
+                <span className="font-montserrat text-gold">Hello Admin</span>
+                <Button
+                  variant="outline"
+                  onClick={handleAdminDashboard}
+                  className="flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Button>
+              </div>
             )}
           </div>
 
@@ -212,24 +215,13 @@ export const Navbar = () => {
 
             {/* Authentication Buttons */}
             {user ? (
-              <div className="flex items-center space-x-2">
-                {isAdmin && (
-                  <Button 
-                    variant="outline" 
-                    onClick={handleAdminDashboard}
-                    className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark"
-                  >
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
-                  </Button>
-                )}
-                <Button 
-                  variant="destructive" 
-                  onClick={handleSignOut}
-                  className="bg-red-500 hover:bg-red-600 flex items-center gap-2"
-                >
-                  <LogOut className="h-4 w-4" /> Sign Out
-                </Button>
-              </div>
+              <Button 
+                variant="destructive" 
+                onClick={handleSignOut}
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Sign Out
+              </Button>
             ) : (
               <Button 
                 variant="outline" 
@@ -280,66 +272,40 @@ export const Navbar = () => {
             >
               Contact
             </Link>
-            
-            {isAdmin && (
-              <Link 
-                to="/admin/dashboard"
-                onClick={toggleMenu}
-                className="font-montserrat text-gold hover:text-gold-dark transition-colors flex items-center gap-2"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                Admin Dashboard
-              </Link>
-            )}
-            
-            <div className="flex space-x-4 pt-2">
-              <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
-                <Search className="h-5 w-5 text-Rolex-charcoal" />
-              </Button>
-              
-              {/* Mobile Cart Button */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="h-5 w-5 text-Rolex-charcoal" />
-                    {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {totalItems}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="end" className="p-0 w-80">
-                  <CartDropdown />
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            {/* Mobile Authentication Buttons */}
-            {user ? (
-              <div className="flex flex-col space-y-2 w-full">
-                {isAdmin && (
-                  <Button 
-                    variant="outline" 
-                    onClick={handleAdminDashboard}
-                    className="flex items-center gap-2 bg-gold text-white hover:bg-gold-dark w-full"
-                  >
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
-                  </Button>
-                )}
+            {user && (
+              <>
+                <span className="font-montserrat text-gold">Hello Admin</span>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleAdminDashboard();
+                    toggleMenu();
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Button>
                 <Button 
                   variant="destructive" 
-                  onClick={handleSignOut}
-                  className="bg-red-500 hover:bg-red-600 flex items-center gap-2 w-full"
+                  onClick={() => {
+                    handleSignOut();
+                    toggleMenu();
+                  }}
+                  className="bg-red-500 hover:bg-red-600"
                 >
-                  <LogOut className="h-4 w-4" /> Sign Out
+                  Sign Out
                 </Button>
-              </div>
-            ) : (
+              </>
+            )}
+            {!user && (
               <Button 
                 variant="outline" 
-                onClick={handleAdminLogin}
-                className="flex items-center gap-2 w-full"
+                onClick={() => {
+                  handleAdminLogin();
+                  toggleMenu();
+                }}
+                className="flex items-center gap-2"
               >
                 <LogIn className="h-4 w-4" /> Admin Sign In
               </Button>
@@ -348,141 +314,107 @@ export const Navbar = () => {
         </div>
       )}
 
-      {/* Advanced Search Dialog */}
+      {/* Search Dialog */}
       <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-playfair">Search Watches</DialogTitle>
+            <DialogTitle>Search Watches</DialogTitle>
             <DialogDescription>
-              Enter watch name or brand to find the perfect timepiece
+              Find your perfect timepiece
             </DialogDescription>
           </DialogHeader>
-          <div className="relative my-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <Input
-              type="text"
-              placeholder="Enter watch name or brand..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-md focus:border-gold focus:ring-gold focus:ring-1 focus:outline-none"
-              autoFocus
-            />
-          </div>
-          
-          {/* Advanced Search Toggle */}
-          <div className="mb-4">
-            <Button 
-              variant="outline" 
-              onClick={toggleAdvancedSearch}
-              className="w-full flex justify-between items-center text-Rolex-charcoal"
-            >
-              Advanced Search
-              <ChevronDown className={`ml-2 h-4 w-4 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`} />
-            </Button>
-          </div>
-          
-          {/* Advanced Search Options */}
-          {showAdvancedSearch && (
-            <div className="space-y-4 mb-6 p-4 border border-gray-200 rounded-md bg-gray-50">
-              {/* Category Selection */}
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Price Range Slider */}
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <Label>Price Range</Label>
-                  <span className="text-sm text-Rolex-charcoal">
-                    ${priceRange[0]} - ${priceRange[1]}
-                  </span>
-                </div>
-                <Slider
-                  defaultValue={[minPrice, maxPrice]}
-                  min={minPrice}
-                  max={maxPrice}
-                  step={100}
-                  value={[priceRange[0], priceRange[1]]}
-                  onValueChange={handlePriceRangeChange}
-                  className="py-4"
-                />
-              </div>
-              
-              {/* Sort Options */}
-              <div className="space-y-2">
-                <Label>Sort By</Label>
-                <RadioGroup value={sortOption} onValueChange={setSortOption} className="flex flex-col space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="relevance" id="relevance" />
-                    <Label htmlFor="relevance" className="cursor-pointer">Relevance</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="price-asc" id="price-asc" />
-                    <Label htmlFor="price-asc" className="cursor-pointer flex items-center">
-                      Price: Low to High <ArrowUp className="ml-1 h-3 w-3" />
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="price-desc" id="price-desc" />
-                    <Label htmlFor="price-desc" className="cursor-pointer flex items-center">
-                      Price: High to Low <ArrowDown className="ml-1 h-3 w-3" />
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="name-asc" id="name-asc" />
-                    <Label htmlFor="name-asc" className="cursor-pointer flex items-center">
-                      Name (A-Z) <ArrowUpDown className="ml-1 h-3 w-3" />
-                    </Label>
-                  </div>
-                </RadioGroup>
-              </div>
-              
-              {/* Apply Filters Button */}
-              <Button onClick={applyAdvancedSearch} className="w-full bg-gold hover:bg-gold/90 text-white">
-                Apply Filters
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Search watches..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="flex-1"
+              />
+              <Button variant="outline" onClick={toggleAdvancedSearch}>
+                Advanced
               </Button>
             </div>
-          )}
-          
-          {/* Search Results */}
-          {searchQuery.trim() !== "" || showAdvancedSearch ? (
-            <div className="mt-4">
-              {searchResults.length === 0 ? (
-                <p className="text-center py-8 text-Rolex-charcoal">No watches found matching your criteria</p>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {searchResults.map(watch => (
-                    <div 
-                      key={watch.id} 
-                      className="cursor-pointer hover:shadow-md transition-shadow bg-white p-4 rounded-lg"
-                      onClick={() => handleSearchResultClick(watch.id)}
-                    >
-                      <div className="aspect-square overflow-hidden rounded-md mb-2">
-                        <img src={watch.images[0]} alt={watch.name} className="w-full h-full object-cover" />
-                      </div>
-                      <h3 className="font-playfair font-bold text-Rolex-black">{watch.name}</h3>
-                      <p className="text-Rolex-charcoal text-sm">{watch.brand}</p>
-                      <p className="text-gold font-semibold">${watch.price.toLocaleString()}</p>
-                    </div>
-                  ))}
+
+            {showAdvancedSearch && (
+              <div className="space-y-4 p-4 border rounded-lg">
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
-            </div>
-          ) : (
-            <p className="text-center py-8 text-gray-400">Type to search for watches or use advanced search options...</p>
-          )}
+
+                <div className="space-y-2">
+                  <Label>Price Range</Label>
+                  <Slider
+                    value={priceRange}
+                    onValueChange={handlePriceRangeChange}
+                    min={minPrice}
+                    max={maxPrice}
+                    step={100}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>${priceRange[0]}</span>
+                    <span>${priceRange[1]}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Sort By</Label>
+                  <Select value={sortOption} onValueChange={setSortOption}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="relevance">Relevance</SelectItem>
+                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                      <SelectItem value="name-asc">Name: A to Z</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button onClick={applyAdvancedSearch} className="w-full">
+                  Apply Filters
+                </Button>
+              </div>
+            )}
+
+            {searchResults.length > 0 && (
+              <div className="max-h-96 overflow-y-auto space-y-2">
+                {searchResults.map((watch) => (
+                  <button
+                    key={watch.id}
+                    onClick={() => handleSearchResultClick(watch.id)}
+                    className="w-full p-2 hover:bg-gray-100 rounded-lg text-left"
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={watch.images[0]}
+                        alt={watch.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      <div>
+                        <h3 className="font-medium">{watch.name}</h3>
+                        <p className="text-sm text-gray-500">${watch.price}</p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </nav>

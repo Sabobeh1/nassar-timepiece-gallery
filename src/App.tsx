@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,7 +13,12 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import WatchDetails from "./pages/WatchDetails";
 import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
+import { AdminDashboard } from "@/pages/admin/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { NewProduct } from "@/pages/admin/NewProduct";
+import { EditProduct } from "@/pages/admin/EditProduct";
+import { NewCategory } from "@/pages/admin/NewCategory";
+import { EditCategory } from "@/pages/admin/EditCategory";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -39,7 +43,34 @@ const App = () => (
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/watch/:id" element={<WatchDetails />} />
               <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route 
+                path="/admin/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/admin/products/new" element={
+                <ProtectedRoute>
+                  <NewProduct />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/products/:id/edit" element={
+                <ProtectedRoute>
+                  <EditProduct />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/categories/new" element={
+                <ProtectedRoute>
+                  <NewCategory />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/categories/:id/edit" element={
+                <ProtectedRoute>
+                  <EditCategory />
+                </ProtectedRoute>
+              } />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>

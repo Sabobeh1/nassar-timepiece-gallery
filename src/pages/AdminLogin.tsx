@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast"; // Import from hooks directory
+import { useToast } from "@/hooks/use-toast";
 import { Navbar } from "@/components/Navbar";
 import { ArrowLeft } from "lucide-react";
 
@@ -26,13 +25,21 @@ export default function AdminLogin() {
         title: "Login successful",
         description: "You are now signed in as an admin",
       });
-      navigate('/admin/dashboard'); // Redirect to admin dashboard after successful login
-    } catch (error) {
+      navigate('/admin/dashboard');
+    } catch (error: any) {
       console.error("Login error:", error);
+      let errorMessage = "Invalid credentials. Please try again.";
+      
+      if (error.message === "User is not an admin") {
+        errorMessage = "This account does not have admin privileges.";
+      } else if (error.message === "Invalid login credentials") {
+        errorMessage = "Invalid email or password.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Invalid credentials. Please try again.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -54,6 +61,7 @@ export default function AdminLogin() {
         
         <div className="w-full max-w-md mx-auto p-8 space-y-6 bg-white rounded-lg shadow-lg">
           <h1 className="text-3xl font-playfair text-center text-Rolex-black">Admin Login</h1>
+          <p className="text-center text-Rolex-charcoal">Please enter your admin credentials to access the dashboard.</p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
