@@ -44,7 +44,7 @@ export interface Database {
           description: string;
           price: number;
           category_id: string;
-          images: string[];
+          image_urls: string[];
           is_featured: boolean;
           created_at: string;
           updated_at: string;
@@ -55,7 +55,7 @@ export interface Database {
           description: string;
           price: number;
           category_id: string;
-          images?: string[];
+          image_urls?: string[];
           is_featured?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -66,7 +66,7 @@ export interface Database {
           description?: string;
           price?: number;
           category_id?: string;
-          images?: string[];
+          image_urls?: string[];
           is_featured?: boolean;
           created_at?: string;
           updated_at?: string;

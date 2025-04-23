@@ -25,7 +25,7 @@ export const ProductForm = ({ initialData }: ProductFormProps) => {
     description: initialData?.description || '',
     price: initialData?.price || 0,
     category_id: initialData?.category_id || '',
-    images: initialData?.images || [],
+    image_urls: initialData?.image_urls || [],
     is_featured: initialData?.is_featured || false,
   });
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -82,7 +82,7 @@ export const ProductForm = ({ initialData }: ProductFormProps) => {
     setImagePreviews([...imagePreviews, ...newPreviews]);
     setFormData(prev => ({
       ...prev,
-      images: [...prev.images, ...newImages]
+      image_urls: [...prev.image_urls, ...newImages]
     }));
   };
 

@@ -120,6 +120,14 @@ export const AdminDashboard = () => {
     }
   };
 
+  const handleAddProduct = () => {
+    navigate('/admin/products/new');
+  };
+
+  const handleEditProduct = (productId: string) => {
+    navigate(`/admin/products/${productId}/edit`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -140,7 +148,7 @@ export const AdminDashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
           <div className="flex gap-4">
-            <Button onClick={() => navigate('/admin/products/new')}>
+            <Button onClick={handleAddProduct}>
               <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
@@ -185,9 +193,9 @@ export const AdminDashboard = () => {
                     {products.map((product) => (
                       <TableRow key={product.id}>
                         <TableCell>
-                          {product.images && product.images[0] ? (
+                          {product.image_urls && product.image_urls[0] ? (
                             <img
-                              src={product.images[0]}
+                              src={product.image_urls[0]}
                               alt={product.name}
                               className="h-12 w-12 object-cover rounded"
                             />
@@ -213,7 +221,7 @@ export const AdminDashboard = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => navigate(`/admin/products/${product.id}/edit`)}
+                              onClick={() => handleEditProduct(product.id)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>

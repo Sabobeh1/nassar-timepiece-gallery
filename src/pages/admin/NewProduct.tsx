@@ -23,7 +23,7 @@ export const NewProduct = () => {
     description: "",
     price: "",
     category_id: "",
-    images: [] as string[],
+    image_urls: [] as string[],
     is_featured: false,
   });
 
@@ -58,7 +58,7 @@ export const NewProduct = () => {
           description: formData.description,
           price: parseFloat(formData.price),
           category_id: formData.category_id,
-          images: formData.images,
+          image_urls: formData.image_urls,
           is_featured: formData.is_featured,
         }]);
 
@@ -100,7 +100,7 @@ export const NewProduct = () => {
       const uploadedUrls = await Promise.all(uploadPromises);
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, ...uploadedUrls]
+        image_urls: [...prev.image_urls, ...uploadedUrls]
       }));
 
       toast.success('Images uploaded successfully');
@@ -180,9 +180,9 @@ export const NewProduct = () => {
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
-                {formData.images.length > 0 && (
+                {formData.image_urls.length > 0 && (
                   <div className="grid grid-cols-4 gap-4 mt-4">
-                    {formData.images.map((url, index) => (
+                    {formData.image_urls.map((url, index) => (
                       <div key={index} className="relative">
                         <img
                           src={url}
@@ -194,7 +194,7 @@ export const NewProduct = () => {
                           className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                           onClick={() => setFormData(prev => ({
                             ...prev,
-                            images: prev.images.filter((_, i) => i !== index)
+                            image_urls: prev.image_urls.filter((_, i) => i !== index)
                           }))}
                         >
                           ×
