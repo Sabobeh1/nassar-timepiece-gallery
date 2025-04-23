@@ -2,228 +2,328 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Edit, Trash, Package, Tags } from "lucide-react";
+import { Plus, Edit, Trash, Package, Tags, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
-type Product = Database['public']['Tables']['products']['Row'];
+type Product = Database['public']['Tables']['products']['Row'] & {
+  category: Database['public']['Tables']['categories']['Row'];
+};
+
 type Category = Database['public']['Tables']['categories']['Row'];
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ type: 'product' | 'category', id: string } | null>(null);
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate("/admin/login");
-    }
-  }, [user, isLoading, navigate]);
+    fetchData();
+  }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetchProducts();
-      fetchCategories();
-    }
-  }, [user]);
-
-  const fetchProducts = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+      setLoading(true);
+      const [productsResponse, categoriesResponse] = await Promise.all([
+        supabase
+          .from('products')
+          .select(`
+            *,
+            category:categories(*)
+          `)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('categories')
+          .select('*')
+          .order('created_at', { ascending: false })
+      ]);
 
-      if (error) throw error;
-      setProducts(data || []);
+      if (productsResponse.error) throw productsResponse.error;
+      if (categoriesResponse.error) throw categoriesResponse.error;
+
+      setProducts(productsResponse.data || []);
+      setCategories(categoriesResponse.data || []);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error fetching data:', error);
+      toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
+  const handleDelete = async () => {
+    if (!itemToDelete) return;
 
-      if (error) throw error;
-      setCategories(data || []);
+    try {
+      if (itemToDelete.type === 'product') {
+        const { error } = await supabase
+          .from('products')
+          .delete()
+          .eq('id', itemToDelete.id);
+
+        if (error) throw error;
+        setProducts(products.filter(p => p.id !== itemToDelete.id));
+        toast.success('Product deleted successfully');
+      } else {
+        // Check if category has products
+        const { data: productsInCategory } = await supabase
+          .from('products')
+          .select('id')
+          .eq('category_id', itemToDelete.id);
+
+        if (productsInCategory && productsInCategory.length > 0) {
+          toast.error('Cannot delete category with existing products');
+          return;
+        }
+
+        const { error } = await supabase
+          .from('categories')
+          .delete()
+          .eq('id', itemToDelete.id);
+
+        if (error) throw error;
+        setCategories(categories.filter(c => c.id !== itemToDelete.id));
+        toast.success('Category deleted successfully');
+      }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('Error deleting item:', error);
+      toast.error('Failed to delete item');
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setItemToDelete(null);
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', productId);
-
-      if (error) throw error;
-      fetchProducts();
-    } catch (error) {
-      console.error('Error deleting product:', error);
-    }
-  };
-
-  const handleDeleteCategory = async (categoryId: string) => {
-    try {
-      const { error } = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', categoryId);
-
-      if (error) throw error;
-      fetchCategories();
-    } catch (error) {
-      console.error('Error deleting category:', error);
-    }
-  };
-
-  if (isLoading || loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-playfair font-bold text-Rolex-black mb-8">
-          Admin Dashboard
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <div className="flex gap-4">
+            <Button onClick={() => navigate('/admin/products/new')}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+            <Button onClick={() => navigate('/admin/categories/new')}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Category
+            </Button>
+          </div>
+        </div>
 
-        <Tabs defaultValue="products" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="products" className="flex items-center gap-2">
-              <Package className="h-4 w-4" /> Products Management
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="products">
+              <Package className="mr-2 h-4 w-4" />
+              Products
             </TabsTrigger>
-            <TabsTrigger value="categories" className="flex items-center gap-2">
-              <Tags className="h-4 w-4" /> Categories Management
+            <TabsTrigger value="categories">
+              <Tags className="mr-2 h-4 w-4" />
+              Categories
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="products">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle>Products</CardTitle>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2"
-                  onClick={() => navigate("/admin/products/new")}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add New Product
-                </Button>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Image</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Featured</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {products.map((product) => (
-                      <div key={product.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="font-semibold">{product.name}</h3>
-                            <p className="text-sm text-gray-500">
-                              {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
-                            </p>
-                          </div>
+                      <TableRow key={product.id}>
+                        <TableCell>
+                          {product.images && product.images[0] ? (
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="h-12 w-12 object-cover rounded"
+                            />
+                          ) : (
+                            <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
+                              <ImageIcon className="h-6 w-6 text-gray-400" />
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>{product.category?.name}</TableCell>
+                        <TableCell>${product.price.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <Badge variant={product.is_featured ? "default" : "secondary"}>
+                            {product.is_featured ? "Yes" : "No"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(product.created_at), "MMM d, yyyy")}
+                        </TableCell>
+                        <TableCell>
                           <div className="flex gap-2">
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
+                            <Button
+                              variant="outline"
+                              size="sm"
                               onClick={() => navigate(`/admin/products/${product.id}/edit`)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleDeleteProduct(product.id)}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setItemToDelete({ type: 'product', id: product.id });
+                                setIsDeleteDialogOpen(true);
+                              }}
                             >
                               <Trash className="h-4 w-4" />
                             </Button>
                           </div>
-                        </div>
-                        {product.images && product.images.length > 0 && (
-                          <div className="aspect-square bg-gray-100 rounded-lg mb-2">
-                            <img 
-                              src={product.images[0]} 
-                              alt={product.name}
-                              className="w-full h-full object-cover rounded-lg"
-                            />
-                          </div>
-                        )}
-                        <p className="text-gold font-semibold">${product.price.toFixed(2)}</p>
-                      </div>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </div>
-                </div>
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="categories">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader>
                 <CardTitle>Categories</CardTitle>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2"
-                  onClick={() => navigate("/admin/categories/new")}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add New Category
-                </Button>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Image</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {categories.map((category) => (
-                      <div key={category.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <h3 className="font-semibold">{category.name}</h3>
-                            <p className="text-sm text-gray-500">{category.description}</p>
-                          </div>
+                      <TableRow key={category.id}>
+                        <TableCell>
+                          {category.image_url ? (
+                            <img
+                              src={category.image_url}
+                              alt={category.name}
+                              className="h-12 w-12 object-cover rounded"
+                            />
+                          ) : (
+                            <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
+                              <ImageIcon className="h-6 w-6 text-gray-400" />
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>{category.name}</TableCell>
+                        <TableCell className="max-w-xs truncate">
+                          {category.description}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(category.created_at), "MMM d, yyyy")}
+                        </TableCell>
+                        <TableCell>
                           <div className="flex gap-2">
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
+                            <Button
+                              variant="outline"
+                              size="sm"
                               onClick={() => navigate(`/admin/categories/${category.id}/edit`)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleDeleteCategory(category.id)}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setItemToDelete({ type: 'category', id: category.id });
+                                setIsDeleteDialogOpen(true);
+                              }}
                             >
                               <Trash className="h-4 w-4" />
                             </Button>
                           </div>
-                        </div>
-                      </div>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </div>
-                </div>
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Delete</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this {itemToDelete?.type}? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDelete}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

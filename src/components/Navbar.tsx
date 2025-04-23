@@ -182,8 +182,8 @@ export const Navbar = () => {
                   variant="outline"
                   onClick={handleAdminDashboard}
                   className="flex items-center gap-2"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
+              >
+                <LayoutDashboard className="h-4 w-4" />
                   Dashboard
                 </Button>
               </div>
@@ -215,13 +215,13 @@ export const Navbar = () => {
 
             {/* Authentication Buttons */}
             {user ? (
-              <Button 
-                variant="destructive" 
-                onClick={handleSignOut}
+                <Button 
+                  variant="destructive" 
+                  onClick={handleSignOut}
                 className="bg-red-500 hover:bg-red-600"
-              >
+                >
                 Sign Out
-              </Button>
+                </Button>
             ) : (
               <Button 
                 variant="outline" 
@@ -275,17 +275,17 @@ export const Navbar = () => {
             {user && (
               <>
                 <span className="font-montserrat text-gold">Hello Admin</span>
-                <Button
-                  variant="outline"
+                  <Button 
+                    variant="outline" 
                   onClick={() => {
                     handleAdminDashboard();
                     toggleMenu();
                   }}
                   className="flex items-center gap-2"
-                >
+                  >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
-                </Button>
+                  </Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => {
@@ -325,53 +325,53 @@ export const Navbar = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex gap-2">
-              <Input
+            <Input
                 placeholder="Search watches..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
                 className="flex-1"
               />
               <Button variant="outline" onClick={toggleAdvancedSearch}>
                 Advanced
-              </Button>
-            </div>
-
-            {showAdvancedSearch && (
+            </Button>
+          </div>
+          
+          {showAdvancedSearch && (
               <div className="space-y-4 p-4 border rounded-lg">
-                <div className="space-y-2">
-                  <Label>Category</Label>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
                   <Label>Price Range</Label>
-                  <Slider
+                <Slider
                     value={priceRange}
                     onValueChange={handlePriceRangeChange}
-                    min={minPrice}
-                    max={maxPrice}
-                    step={100}
+                  min={minPrice}
+                  max={maxPrice}
+                  step={100}
                     className="w-full"
-                  />
+                />
                   <div className="flex justify-between text-sm text-gray-500">
                     <span>${priceRange[0]}</span>
                     <span>${priceRange[1]}</span>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Sort By</Label>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Sort By</Label>
                   <Select value={sortOption} onValueChange={setSortOption}>
                     <SelectTrigger>
                       <SelectValue placeholder="Sort by" />
@@ -383,22 +383,22 @@ export const Navbar = () => {
                       <SelectItem value="name-asc">Name: A to Z</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-
-                <Button onClick={applyAdvancedSearch} className="w-full">
-                  Apply Filters
-                </Button>
               </div>
-            )}
-
+              
+                <Button onClick={applyAdvancedSearch} className="w-full">
+                Apply Filters
+              </Button>
+            </div>
+          )}
+          
             {searchResults.length > 0 && (
               <div className="max-h-96 overflow-y-auto space-y-2">
                 {searchResults.map((watch) => (
                   <button
-                    key={watch.id}
-                    onClick={() => handleSearchResultClick(watch.id)}
+                      key={watch.id} 
+                      onClick={() => handleSearchResultClick(watch.id)}
                     className="w-full p-2 hover:bg-gray-100 rounded-lg text-left"
-                  >
+                    >
                     <div className="flex items-center gap-4">
                       <img
                         src={watch.images[0]}
@@ -411,10 +411,10 @@ export const Navbar = () => {
                       </div>
                     </div>
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
+                  ))}
+                </div>
+              )}
+            </div>
         </DialogContent>
       </Dialog>
     </nav>
