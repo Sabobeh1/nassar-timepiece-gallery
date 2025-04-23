@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Search } from "lucide-react";
@@ -19,6 +20,7 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -28,9 +30,22 @@ const CategoryPage = () => {
     }
   }, [categoryId]);
 
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(product => 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchQuery, products]);
+
   const fetchCategoryAndProducts = async () => {
     try {
       setLoading(true);
+      console.log("Fetching category with ID:", categoryId);
       
       // Fetch category
       const { data: categoryData, error: categoryError } = await supabase
@@ -39,10 +54,16 @@ const CategoryPage = () => {
         .eq('id', categoryId)
         .single();
 
-      if (categoryError) throw categoryError;
+      if (categoryError) {
+        console.error('Category error:', categoryError);
+        throw categoryError;
+      }
       if (!categoryData) {
+        console.error('Category not found');
         throw new Error('Category not found');
       }
+      
+      console.log("Category found:", categoryData);
       setCategory(categoryData);
 
       // Fetch products with their images
@@ -52,20 +73,25 @@ const CategoryPage = () => {
         .eq('category_id', categoryId)
         .order('created_at', { ascending: false });
 
-      if (productsError) throw productsError;
+      if (productsError) {
+        console.error('Products error:', productsError);
+        throw productsError;
+      }
+      
+      console.log("Products found:", productsData?.length || 0);
       
       // Ensure products have valid image arrays and format price
       const validProducts = (productsData || []).map(product => ({
         ...product,
-        images: Array.isArray(product.images) ? product.images : [],
+        image_urls: Array.isArray(product.image_urls) ? product.image_urls : [],
         price: Number(product.price)
       }));
       
       setProducts(validProducts);
+      setFilteredProducts(validProducts);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load category data');
-      navigate('/collections');
     } finally {
       setLoading(false);
     }
@@ -74,22 +100,11 @@ const CategoryPage = () => {
   // Search function
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    
-    if (!query.trim()) {
-      fetchCategoryAndProducts();
-      return;
-    }
-    
-    const filtered = products.filter(product => 
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.description.toLowerCase().includes(query.toLowerCase())
-    );
-    setProducts(filtered);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-luxuryy-cream">
+      <div className="min-h-screen flex flex-col bg-Rolex-cream">
         <Navbar />
         <main className="flex-grow py-8">
           <div className="container mx-auto px-4">
@@ -105,7 +120,7 @@ const CategoryPage = () => {
 
   if (!category) {
     return (
-      <div className="min-h-screen flex flex-col bg-luxuryy-cream">
+      <div className="min-h-screen flex flex-col bg-Rolex-cream">
         <Navbar />
         <main className="flex-grow py-8">
           <div className="container mx-auto px-4">
@@ -122,7 +137,7 @@ const CategoryPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-luxuryy-cream">
+    <div className="min-h-screen flex flex-col bg-Rolex-cream">
       <Navbar />
       
       <main className="flex-grow py-8">
@@ -155,29 +170,43 @@ const CategoryPage = () => {
             </div>
           </div>
           
-          {products.length === 0 ? (
+          {filteredProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16">
-              <p className="text-Rolex-charcoal text-lg mb-4">No watches found in this collection</p>
-              <Button 
-                onClick={() => navigate('/collections')}
-                variant="outline"
-                className="border-gold text-gold hover:bg-gold/10"
-              >
-                Return to Collections
-              </Button>
+              <p className="text-Rolex-charcoal text-lg mb-4">
+                {products.length === 0 
+                  ? "No watches found in this collection" 
+                  : "No watches match your search criteria"}
+              </p>
+              {products.length === 0 ? (
+                <Button 
+                  onClick={() => navigate('/collections')}
+                  variant="outline"
+                  className="border-gold text-gold hover:bg-gold/10"
+                >
+                  Return to Collections
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => setSearchQuery('')}
+                  variant="outline"
+                  className="border-gold text-gold hover:bg-gold/10"
+                >
+                  Clear Search
+                </Button>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map(product => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map(product => (
                 <WatchCard
                   key={product.id}
                   id={product.id}
                   name={product.name}
                   brand={category.name}
                   price={product.price}
-                  images={product.images}
+                  images={product.image_urls || []}
                   category={category.name}
-                  isNew={product.is_featured}
+                  isNew={product.is_featured || false}
                 />
               ))}
             </div>

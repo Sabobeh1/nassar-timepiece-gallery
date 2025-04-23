@@ -6,97 +6,103 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
-      admin_users: {
+      categories: {
         Row: {
-          id: string
-          user_id: string
           created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          user_id: string
           created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          user_id?: string
           created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_urls: string[] | null
+          is_featured: boolean | null
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_featured?: boolean | null
+          name: string
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[] | null
+          is_featured?: boolean | null
+          name?: string
+          price?: number
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "admin_users_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
-      products: {
+      profiles: {
         Row: {
-          id: string;
-          name: string;
-          description: string;
-          price: number;
-          category_id: string;
-          image_urls: string[];
-          is_featured: boolean;
-          created_at: string;
-          updated_at: string;
-        };
+          created_at: string
+          email: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          name: string;
-          description: string;
-          price: number;
-          category_id: string;
-          image_urls?: string[];
-          is_featured?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          email: string
+          id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          name?: string;
-          description?: string;
-          price?: number;
-          category_id?: string;
-          image_urls?: string[];
-          is_featured?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      }
-      categories: {
-        Row: {
-          id: string;
-          name: string;
-          description: string;
-          image_url: string;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          description: string;
-          image_url: string;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          description?: string;
-          image_url?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          email?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -104,14 +110,12 @@ export interface Database {
     }
     Functions: {
       is_admin: {
-        Args: {
-          user_id: string
-        }
+        Args: { user_id: string }
         Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never

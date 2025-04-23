@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -16,7 +17,7 @@ const Index = () => {
 
   // Handler for category navigation
   const handleCategoryClick = (categoryId: string, categoryName: string) => {
-    navigate(`/category/${categoryId}`, { state: { category: categoryName } });
+    navigate(`/collections/${categoryId}`, { state: { categoryName } });
   };
 
   if (loading) {

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -33,12 +34,8 @@ const App = () => (
           <CartProvider>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/Rolex" element={<CategoryPage />} />
-              <Route path="/Ap" element={<CategoryPage />} />
-              <Route path="/Omega" element={<CategoryPage />} />
-              <Route path="/Patek" element={<CategoryPage />} />
-              <Route path="/Breitling" element={<CategoryPage />} />
               <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/collections/:categoryId" element={<CategoryPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/watch/:id" element={<WatchDetails />} />

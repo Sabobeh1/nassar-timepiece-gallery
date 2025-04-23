@@ -1,18 +1,10 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string;
-  created_at: string;
-  updated_at: string;
-}
 
 const CollectionsPage = () => {
   const navigate = useNavigate();
@@ -24,7 +16,7 @@ const CollectionsPage = () => {
 
   // Handler for category navigation
   const handleViewCollection = (categoryId: string, categoryName: string) => {
-    navigate(`/collections/${categoryId}`, { state: { category: categoryName } });
+    navigate(`/collections/${categoryId}`, { state: { categoryName } });
   };
 
   if (loading) {
