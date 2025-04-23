@@ -163,10 +163,10 @@ export const Navbar = () => {
 
   return (
     <nav className="w-full bg-white shadow-sm py-4 sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 sm:px-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center">
-            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-Rolex-black">
+            <h1 className="text-xl xs:text-2xl md:text-3xl font-playfair font-bold text-Rolex-black">
               <span className="text-gold">NASSAR</span> WATCHES
             </h1>
           </Link>
@@ -200,17 +200,27 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Action Icons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
-              <Search className="h-5 w-5 text-Rolex-charcoal" />
+          {/* Action Icons – Always visible on mobile and desktop */}
+          <div className="flex items-center space-x-3 md:space-x-4">
+            {/* Mobile: Cart & Search Icons, always visible */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleOpenSearch}
+              className="p-2 sm:p-2.5 rounded-full md:hidden flex items-center justify-center focus:ring-2 focus:ring-gold"
+              aria-label="Search Watches"
+            >
+              <Search className="h-6 w-6 text-Rolex-charcoal" />
             </Button>
-            
-            {/* Cart with Dropdown */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingCart className="h-5 w-5 text-Rolex-charcoal" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative p-2 sm:p-2.5 rounded-full md:hidden flex items-center justify-center focus:ring-2 focus:ring-gold"
+                  aria-label="View Cart"
+                >
+                  <ShoppingCart className="h-6 w-6 text-Rolex-charcoal" />
                   {totalItems > 0 && (
                     <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {totalItems}
@@ -218,35 +228,66 @@ export const Navbar = () => {
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align="end" className="p-0 w-80">
+              <PopoverContent align="end" className="p-0 w-[95vw] max-w-sm sm:max-w-xs">
                 <CartDropdown />
               </PopoverContent>
             </Popover>
-
-            {/* Authentication Buttons */}
-            {user ? (
-                <Button 
-                  variant="destructive" 
-                  onClick={handleSignOut}
-                className="bg-red-500 hover:bg-red-600"
-                >
-                Sign Out
-                </Button>
-            ) : (
-              <Button 
-                variant="outline" 
-                onClick={handleAdminLogin}
-                className="flex items-center gap-2"
-              >
-                <LogIn className="h-4 w-4" /> Admin Sign In
+            {/* Desktop actions retained */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" size="icon" onClick={handleOpenSearch}>
+                <Search className="h-5 w-5 text-Rolex-charcoal" />
               </Button>
-            )}
-          </div>
+              
+              {/* Cart with Dropdown */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="h-5 w-5 text-Rolex-charcoal" />
+                    {totalItems > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-gold text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {totalItems}
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="p-0 w-80">
+                  <CartDropdown />
+                </PopoverContent>
+              </Popover>
 
-          {/* Mobile Menu Button */}
-          <button className="md:hidden text-Rolex-charcoal" onClick={toggleMenu}>
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+              {/* Authentication Buttons */}
+              {user ? (
+                  <Button 
+                    variant="destructive" 
+                    onClick={handleSignOut}
+                  className="bg-red-500 hover:bg-red-600"
+                  >
+                  Sign Out
+                  </Button>
+              ) : (
+                <Button 
+                  variant="outline" 
+                  onClick={handleAdminLogin}
+                  className="flex items-center gap-2"
+                >
+                  <LogIn className="h-4 w-4" /> Admin Sign In
+                </Button>
+              )}
+            </div>
+
+            {/* Hamburger menu on mobile */}
+            <button
+              className="md:hidden ml-2 text-Rolex-charcoal rounded-full p-2 outline-none focus:ring-2 focus:ring-gold"
+              onClick={toggleMenu}
+              aria-label="Open main menu"
+            >
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
