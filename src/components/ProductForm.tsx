@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +25,7 @@ const ProductForm = ({ product, onSuccess }: ProductFormProps) => {
   const [price, setPrice] = useState(product?.price || 0);
   const [categoryId, setCategoryId] = useState(product?.category_id || "");
   const [isFeatured, setIsFeatured] = useState(product?.is_featured || false);
-  const [images, setImages] = useState<string[]>(product?.images || []);
+  const [images, setImages] = useState<string[]>(product?.image_urls || []);
   const [uploading, setUploading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -146,7 +147,7 @@ const ProductForm = ({ product, onSuccess }: ProductFormProps) => {
         price: Number(price),
         category_id: categoryId,
         is_featured: isFeatured,
-        images: images || [],
+        image_urls: images || [],
       };
 
       if (product) {
