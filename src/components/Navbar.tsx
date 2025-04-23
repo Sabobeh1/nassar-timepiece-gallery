@@ -7,45 +7,70 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import CartDropdown from "./CartDropdown";
 import { useCart } from "@/context/CartContext";
-import { searchWatches } from "@/utils/searchUtils";
-import { watches } from "@/data/watches";
+import { useProductSearch } from "@/hooks/useProductSearch";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-
-// Define the Watch interface to match the one used in data/watches.ts
-interface Watch {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  images: string[];
-  category: string;
-  isNew?: boolean;
-}
+import { useCategories } from "@/hooks/useCategories";
+import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Watch[]>([]);
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
-  const [sortOption, setSortOption] = useState<string>("relevance");
+  const [isFeatured, setIsFeatured] = useState<boolean | undefined>(undefined);
   const { totalItems } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { categories, loading: categoriesLoading } = useCategories();
+  const { searchResults, isLoading, searchProducts } = useProductSearch();
 
-  // Get min and max price from watches data
-  const maxPrice = Math.max(...watches.map(watch => watch.price));
-  const minPrice = Math.min(...watches.map(watch => watch.price));
+  // Get min and max price (will be dynamically determined later)
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(50000);
 
-  // Get unique categories from watches data
-  const categories = ["all", ...Array.from(new Set(watches.map(watch => watch.category)))];
+  // Get price range from database on component mount
+  useEffect(() => {
+    const fetchPriceRange = async () => {
+      try {
+        const { data: minData, error: minError } = await supabase
+          .from('products')
+          .select('price')
+          .order('price', { ascending: true })
+          .limit(1)
+          .single();
+
+        const { data: maxData, error: maxError } = await supabase
+          .from('products')
+          .select('price')
+          .order('price', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (minError || maxError) throw new Error('Failed to fetch price range');
+
+        if (minData && maxData) {
+          const min = Math.floor(minData.price);
+          const max = Math.ceil(maxData.price);
+          setMinPrice(min);
+          setMaxPrice(max);
+          setPriceRange([min, max]);
+        }
+      } catch (error) {
+        console.error('Error fetching price range:', error);
+        // Keep the default values if there's an error
+      }
+    };
+
+    fetchPriceRange();
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -53,59 +78,29 @@ export const Navbar = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.trim() === "") {
-      setSearchResults([]);
-    } else {
-      performSearch(query);
-    }
-  };
-
-  const performSearch = (query: string = searchQuery) => {
-    // First, filter by search query
-    let results = query.trim() !== "" ? searchWatches(query, watches) : [...watches];
     
-    // Then apply category filter if not "all"
-    if (selectedCategory !== "all") {
-      results = results.filter(watch => watch.category.toLowerCase() === selectedCategory.toLowerCase());
-    }
-    
-    // Apply price range filter
-    results = results.filter(watch => watch.price >= priceRange[0] && watch.price <= priceRange[1]);
-    
-    // Sort results based on the selected sort option
-    switch (sortOption) {
-      case "price-asc":
-        results.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        results.sort((a, b) => b.price - a.price);
-        break;
-      case "name-asc":
-        results.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "relevance":
-      default:
-        // Keep the default relevance sorting (from the searchWatches function)
-        break;
-    }
-    
-    setSearchResults(results);
+    // Use our custom hook to search products
+    searchProducts(query, {
+      category: selectedCategory !== 'all' ? selectedCategory : undefined,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      isFeatured: isFeatured
+    });
   };
 
   const handleOpenSearch = () => {
     setIsSearchOpen(true);
     setSearchQuery("");
-    setSearchResults([]);
-    setShowAdvancedSearch(false);
-    // Reset filters
     setSelectedCategory("all");
     setPriceRange([minPrice, maxPrice]);
-    setSortOption("relevance");
+    setIsFeatured(undefined);
+    setShowAdvancedSearch(false);
+    // Clear results
+    searchProducts("", {});
   };
 
   const handleCloseSearch = () => {
     setIsSearchOpen(false);
-    setSearchQuery("");
   };
 
   const handleSearchResultClick = (watchId: string) => {
@@ -122,7 +117,12 @@ export const Navbar = () => {
   };
 
   const applyAdvancedSearch = () => {
-    performSearch();
+    searchProducts(searchQuery, {
+      category: selectedCategory !== 'all' ? selectedCategory : undefined,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      isFeatured: isFeatured
+    });
   };
 
   const handleAdminLogin = () => {
@@ -149,6 +149,16 @@ export const Navbar = () => {
         description: "There was a problem signing out",
       });
     }
+  };
+
+  // Format currency for displaying price
+  const formatCurrency = (price: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
   return (
@@ -325,96 +335,129 @@ export const Navbar = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex gap-2">
-            <Input
+              <Input
                 placeholder="Search watches..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="flex-1"
               />
               <Button variant="outline" onClick={toggleAdvancedSearch}>
                 Advanced
-            </Button>
-          </div>
-          
-          {showAdvancedSearch && (
-              <div className="space-y-4 p-4 border rounded-lg">
-              <div className="space-y-2">
-                <Label>Category</Label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                  <Label>Price Range</Label>
-                <Slider
-                    value={priceRange}
-                    onValueChange={handlePriceRangeChange}
-                  min={minPrice}
-                  max={maxPrice}
-                  step={100}
-                    className="w-full"
-                />
-                  <div className="flex justify-between text-sm text-gray-500">
-                    <span>${priceRange[0]}</span>
-                    <span>${priceRange[1]}</span>
-                  </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Sort By</Label>
-                  <Select value={sortOption} onValueChange={setSortOption}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="relevance">Relevance</SelectItem>
-                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                      <SelectItem value="name-asc">Name: A to Z</SelectItem>
-                    </SelectContent>
-                  </Select>
-              </div>
-              
-                <Button onClick={applyAdvancedSearch} className="w-full">
-                Apply Filters
               </Button>
             </div>
-          )}
           
-            {searchResults.length > 0 && (
+            {showAdvancedSearch && (
+              <div className="space-y-4 p-4 border rounded-lg">
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              
+                <div className="space-y-2">
+                  <Label>Price Range</Label>
+                  <Slider
+                    value={priceRange}
+                    onValueChange={handlePriceRangeChange}
+                    min={minPrice}
+                    max={maxPrice}
+                    step={100}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500">
+                    <span>{formatCurrency(priceRange[0])}</span>
+                    <span>{formatCurrency(priceRange[1])}</span>
+                  </div>
+                </div>
+              
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="featured" 
+                      checked={isFeatured === true}
+                      onCheckedChange={(checked) => {
+                        setIsFeatured(checked === 'indeterminate' ? undefined : checked);
+                      }}
+                    />
+                    <Label htmlFor="featured">Featured Products Only</Label>
+                  </div>
+                </div>
+              
+                <Button onClick={applyAdvancedSearch} className="w-full">
+                  Apply Filters
+                </Button>
+              </div>
+            )}
+          
+            {/* Loading State */}
+            {isLoading && (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
+              </div>
+            )}
+          
+            {/* Results */}
+            {!isLoading && searchResults.length > 0 && (
               <div className="max-h-96 overflow-y-auto space-y-2">
-                {searchResults.map((watch) => (
+                {searchResults.map((product) => (
                   <button
-                      key={watch.id} 
-                      onClick={() => handleSearchResultClick(watch.id)}
-                    className="w-full p-2 hover:bg-gray-100 rounded-lg text-left"
-                    >
+                    key={product.id} 
+                    onClick={() => handleSearchResultClick(product.id)}
+                    className="w-full p-3 hover:bg-gray-100 rounded-lg text-left transition-colors"
+                  >
                     <div className="flex items-center gap-4">
-                      <img
-                        src={watch.images[0]}
-                        alt={watch.name}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                      <div>
-                        <h3 className="font-medium">{watch.name}</h3>
-                        <p className="text-sm text-gray-500">${watch.price}</p>
+                      <div className="relative w-16 h-16 overflow-hidden rounded bg-gray-100 flex-shrink-0">
+                        {product.image_urls?.[0] ? (
+                          <img
+                            src={product.image_urls[0]}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/placeholder-watch.jpg';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            No image
+                          </div>
+                        )}
+                        {product.is_featured && (
+                          <div className="absolute top-0 right-0 bg-gold text-white text-xs px-1 py-0.5">
+                            ★
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900 line-clamp-1">{product.name}</h3>
+                        <p className="text-sm text-gray-500 mb-1">{product.brand}</p>
+                        <p className="text-sm font-bold text-gray-900">{formatCurrency(product.price)}</p>
                       </div>
                     </div>
                   </button>
-                  ))}
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
+          
+            {/* No Results */}
+            {!isLoading && searchQuery && searchResults.length === 0 && (
+              <div className="py-8 text-center text-gray-500">
+                <p>No watches found matching your search criteria.</p>
+                <p className="text-sm mt-2">Try different keywords or filters.</p>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </nav>
