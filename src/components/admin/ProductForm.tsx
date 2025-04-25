@@ -269,7 +269,6 @@ export const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
                 ))}
                 <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-32 cursor-pointer hover:border-gold transition-colors">
                   <input
-                    type="file"
                     id="images"
                     type="file"
                     multiple
