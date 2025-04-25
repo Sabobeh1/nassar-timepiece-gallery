@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +14,10 @@ type Category = Database['public']['Tables']['categories']['Row'];
 
 interface CategoryFormProps {
   initialData?: Category;
+  onSuccess?: () => void;
 }
 
-export const CategoryForm = ({ initialData }: CategoryFormProps) => {
+export const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -104,7 +104,6 @@ export const CategoryForm = ({ initialData }: CategoryFormProps) => {
 
     try {
       if (initialData) {
-        // Update existing category
         const { error } = await supabase
           .from('categories')
           .update(formData)
@@ -113,7 +112,6 @@ export const CategoryForm = ({ initialData }: CategoryFormProps) => {
         if (error) throw error;
         toast.success('Category updated successfully');
       } else {
-        // Create new category
         const { error } = await supabase
           .from('categories')
           .insert([formData]);
@@ -122,10 +120,13 @@ export const CategoryForm = ({ initialData }: CategoryFormProps) => {
         toast.success('Category created successfully');
       }
 
-      navigate('/admin/dashboard');
+      // Only navigate if onSuccess isn't provided
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error('Error saving category:', error);
-      toast.error('Error saving category');
+      toast.error('Failed to save category');
     } finally {
       setLoading(false);
     }
