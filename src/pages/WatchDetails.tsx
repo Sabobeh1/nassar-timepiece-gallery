@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Facebook, Instagram, ArrowLeft, Phone, ShoppingCart, Heart } from "lucide-react";
@@ -264,33 +263,6 @@ const WatchDetails = () => {
                   ))}
                 </div>
               )}
-              
-              {/* Mobile Carousel (visible only on small screens) */}
-              <div className="md:hidden mt-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {product.image_urls.map((image, index) => (
-                      <CarouselItem key={index}>
-                        <Card className="border-none">
-                          <CardContent className="flex aspect-square items-center justify-center p-0">
-                            <img 
-                              src={image} 
-                              alt={`${product.name} slide ${index + 1}`}
-                              className="h-full w-full object-contain"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder-watch.jpg";
-                              }}
-                            />
-                          </CardContent>
-                        </Card>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-0" />
-                  <CarouselNext className="right-0" />
-                </Carousel>
-              </div>
             </div>
             
             {/* Product Information */}

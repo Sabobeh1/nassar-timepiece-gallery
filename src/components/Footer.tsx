@@ -1,7 +1,7 @@
-
 import { Facebook, Instagram, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import TikTokIcon from "./icons/TikTokIcon";
+import { DeveloperInfo } from "./DeveloperInfo";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -69,11 +69,14 @@ const Footer = () => {
           </div>
         </div>
         
-        {/* Copyright */}
-        <div className="mt-10 pt-6 border-t border-gray-800 text-center">
-          <p className="text-gray-400 font-montserrat text-sm">
-            &copy; {currentYear} Nassar Watches. All rights reserved.
-          </p>
+        {/* Copyright and Developer Info */}
+        <div className="mt-10 pt-6 border-t border-gray-800">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 font-montserrat text-sm">
+              &copy; {currentYear} Nassar Watches. All rights reserved.
+            </p>
+            <DeveloperInfo />
+          </div>
         </div>
       </div>
     </footer>

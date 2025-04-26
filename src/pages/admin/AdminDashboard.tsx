@@ -26,6 +26,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import ProductForm from "@/components/ProductForm";
+import { CategoryForm } from "@/components/admin/CategoryForm";
 
 type Product = Database['public']['Tables']['products']['Row'] & {
   category: Database['public']['Tables']['categories']['Row'];
@@ -42,6 +44,10 @@ export const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ type: 'product' | 'category', id: string } | null>(null);
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -121,11 +127,31 @@ export const AdminDashboard = () => {
   };
 
   const handleAddProduct = () => {
-    navigate('/admin/products/new');
+    setEditingProduct(null);
+    setShowProductForm(true);
   };
 
-  const handleEditProduct = (productId: string) => {
-    navigate(`/admin/products/${productId}/edit`);
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setShowProductForm(true);
+  };
+
+  const handleAddCategory = () => {
+    setEditingCategory(null);
+    setShowCategoryForm(true);
+  };
+
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setShowCategoryForm(true);
+  };
+
+  const handleFormSuccess = () => {
+    setShowProductForm(false);
+    setShowCategoryForm(false);
+    setEditingProduct(null);
+    setEditingCategory(null);
+    fetchData();
   };
 
   if (loading) {
@@ -145,19 +171,45 @@ export const AdminDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="flex gap-4">
-            <Button onClick={handleAddProduct}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+            <Button onClick={handleAddProduct} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
-            <Button onClick={() => navigate('/admin/categories/new')}>
+            <Button onClick={handleAddCategory} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Category
             </Button>
           </div>
         </div>
+
+        {showProductForm && (
+          <div className="mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProductForm product={editingProduct} onSuccess={handleFormSuccess} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {showCategoryForm && (
+          <div className="mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CategoryForm initialData={editingCategory} onSuccess={handleFormSuccess} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList>
@@ -221,7 +273,7 @@ export const AdminDashboard = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleEditProduct(product.id)}
+                              onClick={() => handleEditProduct(product)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
@@ -289,7 +341,7 @@ export const AdminDashboard = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => navigate(`/admin/categories/${category.id}/edit`)}
+                              onClick={() => handleEditCategory(category)}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>

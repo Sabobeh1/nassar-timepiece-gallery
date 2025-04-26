@@ -59,12 +59,7 @@ const CartDropdown = () => {
         <div className="flex flex-col items-center justify-center py-8">
           <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mb-2" />
           <p className="text-gray-500 font-montserrat">Your cart is empty</p>
-          <Link
-            to="/"
-            className="mt-4 text-sm text-gold hover:underline"
-          >
-            Continue shopping
-          </Link>
+          
         </div>
       </div>
     );

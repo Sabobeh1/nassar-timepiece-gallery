@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCategories } from "@/hooks/useCategories";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
+import { DeveloperInfo } from "./DeveloperInfo";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -192,12 +193,17 @@ export const Navbar = () => {
                   variant="outline"
                   onClick={handleAdminDashboard}
                   className="flex items-center gap-2"
-              >
-                <LayoutDashboard className="h-4 w-4" />
+                >
+                  <LayoutDashboard className="h-4 w-4" />
                   Dashboard
                 </Button>
               </div>
             )}
+          </div>
+
+          {/* Developer Info - Desktop */}
+          <div className="hidden md:block ml-8">
+            <DeveloperInfo />
           </div>
 
           {/* Action Icons – Always visible on mobile and desktop */}
@@ -289,6 +295,8 @@ export const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Remove the mobile DeveloperInfo from here */}
       </div>
 
       {/* Mobile Menu */}
@@ -326,17 +334,17 @@ export const Navbar = () => {
             {user && (
               <>
                 <span className="font-montserrat text-gold">Hello Admin</span>
-                  <Button 
-                    variant="outline" 
+                <Button 
+                  variant="outline" 
                   onClick={() => {
                     handleAdminDashboard();
                     toggleMenu();
                   }}
                   className="flex items-center gap-2"
-                  >
+                >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
-                  </Button>
+                </Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => {
@@ -361,6 +369,11 @@ export const Navbar = () => {
                 <LogIn className="h-4 w-4" /> Admin Sign In
               </Button>
             )}
+            
+            {/* Developer Info - Mobile */}
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              <DeveloperInfo />
+            </div>
           </div>
         </div>
       )}
