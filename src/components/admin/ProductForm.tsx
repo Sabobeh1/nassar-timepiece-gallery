@@ -1,5 +1,5 @@
+
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,10 +17,10 @@ type Category = Database['public']['Tables']['categories']['Row'];
 interface ProductFormProps {
   initialData?: Product;
   onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
-  const navigate = useNavigate();
+export const ProductForm = ({ initialData, onSuccess, onCancel }: ProductFormProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -178,128 +178,126 @@ export const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
     }
   };
 
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{initialData ? 'Edit Product' : 'Add New Product'}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Product Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                required
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Product Name</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="price">Price</Label>
+        <Input
+          id="price"
+          type="number"
+          value={formData.price}
+          onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Select
+          value={formData.category_id}
+          onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="is_featured"
+          checked={formData.is_featured}
+          onChange={(e) => setFormData(prev => ({ ...prev, is_featured: e.target.checked }))}
+          className="h-4 w-4 text-gold focus:ring-gold border-gray-300 rounded"
+        />
+        <Label htmlFor="is_featured">Featured Product</Label>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="images">Images</Label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {formData.image_urls.map((image, index) => (
+            <div key={index} className="relative group">
+              <img
+                src={image}
+                alt={`Preview ${index + 1}`}
+                className="w-full h-32 object-cover rounded-md"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Select
-                value={formData.category_id}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="is_featured"
-                checked={formData.is_featured}
-                onChange={(e) => setFormData(prev => ({ ...prev, is_featured: e.target.checked }))}
-                className="h-4 w-4 text-gold focus:ring-gold border-gray-300 rounded"
-              />
-              <Label htmlFor="is_featured">Featured Product</Label>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="images">Images</Label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-                <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-32 cursor-pointer hover:border-gold transition-colors">
-                  <input
-                    id="images"
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <div className="text-center">
-                    <ImagePlus className="mx-auto h-8 w-8 text-gray-400" />
-                    <span className="mt-2 block text-sm text-gray-600">
-                      {uploading ? 'Uploading...' : 'Add Images'}
-                    </span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-4">
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                onClick={() => navigate('/admin/dashboard')}
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading || uploading}>
-                {loading ? 'Saving...' : initialData ? 'Update Product' : 'Save Product'}
-              </Button>
+                <X size={16} />
+              </button>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          ))}
+          <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-32 cursor-pointer hover:border-gold transition-colors">
+            <input
+              id="images"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="hidden"
+              type="file"
+            />
+            <div className="text-center">
+              <ImagePlus className="mx-auto h-8 w-8 text-gray-400" />
+              <span className="mt-2 block text-sm text-gray-600">
+                {uploading ? 'Uploading...' : 'Add Images'}
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" disabled={loading || uploading}>
+          {loading ? 'Saving...' : initialData ? 'Update Product' : 'Save Product'}
+        </Button>
+      </div>
+    </form>
   );
 };

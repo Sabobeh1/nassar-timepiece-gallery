@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,10 +15,10 @@ type Category = Database['public']['Tables']['categories']['Row'];
 interface CategoryFormProps {
   initialData?: Category;
   onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
-export const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
-  const navigate = useNavigate();
+export const CategoryForm = ({ initialData, onSuccess, onCancel }: CategoryFormProps) => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(initialData?.image_url || null);
@@ -131,86 +131,84 @@ export const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
     }
   };
 
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onCancel) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{initialData ? 'Edit Category' : 'Add New Category'}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Category Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                required
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Category Name</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="image">Category Image</Label>
+        <div className="grid grid-cols-2 gap-4">
+          {imageUrl ? (
+            <div className="relative group">
+              <img
+                src={imageUrl}
+                alt="Category"
+                className="w-full h-32 object-cover rounded-md"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image">Category Image</Label>
-              <div className="grid grid-cols-2 gap-4">
-                {imageUrl ? (
-                  <div className="relative group">
-                    <img
-                      src={imageUrl}
-                      alt="Category"
-                      className="w-full h-32 object-cover rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : null}
-                <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-32 cursor-pointer hover:border-gold transition-colors">
-                  <input
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <div className="text-center">
-                    <ImagePlus className="mx-auto h-8 w-8 text-gray-400" />
-                    <span className="mt-2 block text-sm text-gray-600">
-                      {uploading ? 'Uploading...' : 'Add Image'}
-                    </span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-4">
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                onClick={() => navigate('/admin/dashboard')}
+                onClick={handleRemoveImage}
+                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading || uploading}>
-                {loading ? 'Saving...' : initialData ? 'Update Category' : 'Save Category'}
-              </Button>
+                <X size={16} />
+              </button>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          ) : null}
+          <label className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-32 cursor-pointer hover:border-gold transition-colors">
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <div className="text-center">
+              <ImagePlus className="mx-auto h-8 w-8 text-gray-400" />
+              <span className="mt-2 block text-sm text-gray-600">
+                {uploading ? 'Uploading...' : 'Add Image'}
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" disabled={loading || uploading}>
+          {loading ? 'Saving...' : initialData ? 'Update Category' : 'Save Category'}
+        </Button>
+      </div>
+    </form>
   );
 };

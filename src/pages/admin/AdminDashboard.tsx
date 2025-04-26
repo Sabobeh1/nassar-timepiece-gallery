@@ -1,5 +1,5 @@
+
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Edit, Trash, Package, Tags, Image as ImageIcon } from "lucide-react";
@@ -18,15 +18,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import ProductForm from "@/components/ProductForm";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { CategoryForm } from "@/components/admin/CategoryForm";
 
 type Product = Database['public']['Tables']['products']['Row'] & {
@@ -36,7 +30,6 @@ type Product = Database['public']['Tables']['products']['Row'] & {
 type Category = Database['public']['Tables']['categories']['Row'];
 
 export const AdminDashboard = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("products");
   const [products, setProducts] = useState<Product[]>([]);
@@ -127,21 +120,45 @@ export const AdminDashboard = () => {
   };
 
   const handleAddProduct = () => {
+    // Close category form if open
+    if (showCategoryForm) {
+      setShowCategoryForm(false);
+      setEditingCategory(null);
+    }
+    
     setEditingProduct(null);
     setShowProductForm(true);
   };
 
   const handleEditProduct = (product: Product) => {
+    // Close category form if open
+    if (showCategoryForm) {
+      setShowCategoryForm(false);
+      setEditingCategory(null);
+    }
+    
     setEditingProduct(product);
     setShowProductForm(true);
   };
 
   const handleAddCategory = () => {
+    // Close product form if open
+    if (showProductForm) {
+      setShowProductForm(false);
+      setEditingProduct(null);
+    }
+    
     setEditingCategory(null);
     setShowCategoryForm(true);
   };
 
   const handleEditCategory = (category: Category) => {
+    // Close product form if open
+    if (showProductForm) {
+      setShowProductForm(false);
+      setEditingProduct(null);
+    }
+    
     setEditingCategory(category);
     setShowCategoryForm(true);
   };
@@ -152,6 +169,16 @@ export const AdminDashboard = () => {
     setEditingProduct(null);
     setEditingCategory(null);
     fetchData();
+  };
+
+  const handleCancelProductForm = () => {
+    setShowProductForm(false);
+    setEditingProduct(null);
+  };
+
+  const handleCancelCategoryForm = () => {
+    setShowCategoryForm(false);
+    setEditingCategory(null);
   };
 
   if (loading) {
@@ -192,7 +219,11 @@ export const AdminDashboard = () => {
                 <CardTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</CardTitle>
               </CardHeader>
               <CardContent>
-                <ProductForm product={editingProduct} onSuccess={handleFormSuccess} />
+                <ProductForm 
+                  initialData={editingProduct || undefined} 
+                  onSuccess={handleFormSuccess} 
+                  onCancel={handleCancelProductForm}
+                />
               </CardContent>
             </Card>
           </div>
@@ -205,7 +236,11 @@ export const AdminDashboard = () => {
                 <CardTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CategoryForm initialData={editingCategory} onSuccess={handleFormSuccess} />
+                <CategoryForm 
+                  initialData={editingCategory || undefined} 
+                  onSuccess={handleFormSuccess} 
+                  onCancel={handleCancelCategoryForm}
+                />
               </CardContent>
             </Card>
           </div>
@@ -387,4 +422,4 @@ export const AdminDashboard = () => {
       </div>
     </div>
   );
-}; 
+};
