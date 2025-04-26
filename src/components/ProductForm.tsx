@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -175,16 +176,6 @@ const ProductForm = ({ product, onSuccess }: ProductFormProps) => {
       console.error('Error saving product:', error);
       toast.error('Failed to save product');
     }
-  };
-
-  // Format currency for displaying price
-  const formatCurrency = (price: number) => {
-    return new Intl.NumberFormat('he-IL', {
-      style: 'currency',
-      currency: 'ILS',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
   };
 
   if (loading) {

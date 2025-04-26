@@ -27,7 +27,7 @@ const CartDropdown = () => {
       const productUrl = `${window.location.origin}/watch/${item.id}`;
       itemsList += `${index + 1}. ${item.brand} ${item.name} - ${new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'ILS',
+        currency: 'USD',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       }).format(item.price)} x ${item.quantity}\nProduct link: ${productUrl}\n\n`;
@@ -35,7 +35,7 @@ const CartDropdown = () => {
 
     itemsList += `\nTotal: ${new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'ILS',
+      currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(totalPrice)}`;
@@ -117,7 +117,7 @@ const CartDropdown = () => {
                   <p className="font-semibold text-right">
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
-                      currency: 'ILS',
+                      currency: 'USD',
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 0,
                     }).format(item.price)}
@@ -143,7 +143,7 @@ const CartDropdown = () => {
             <p>
               {new Intl.NumberFormat('en-US', {
                 style: 'currency',
-                currency: 'ILS',
+                currency: 'USD',
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               }).format(totalPrice)}

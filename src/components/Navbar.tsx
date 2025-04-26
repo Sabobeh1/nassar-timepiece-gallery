@@ -154,9 +154,9 @@ export const Navbar = () => {
 
   // Format currency for displaying price
   const formatCurrency = (price: number) => {
-    return new Intl.NumberFormat('he-IL', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'ILS',
+      currency: 'USD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
@@ -193,8 +193,8 @@ export const Navbar = () => {
                   variant="outline"
                   onClick={handleAdminDashboard}
                   className="flex items-center gap-2"
-              >
-                <LayoutDashboard className="h-4 w-4" />
+                >
+                  <LayoutDashboard className="h-4 w-4" />
                   Dashboard
                 </Button>
               </div>
@@ -334,17 +334,17 @@ export const Navbar = () => {
             {user && (
               <>
                 <span className="font-montserrat text-gold">Hello Admin</span>
-                  <Button 
-                    variant="outline" 
+                <Button 
+                  variant="outline" 
                   onClick={() => {
                     handleAdminDashboard();
                     toggleMenu();
                   }}
                   className="flex items-center gap-2"
-                  >
+                >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
-                  </Button>
+                </Button>
                 <Button 
                   variant="destructive" 
                   onClick={() => {
