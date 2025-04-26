@@ -1,7 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from "@/components/Navbar";
-import ProductForm from "@/components/ProductForm";
+import { ProductForm } from "@/components/admin/ProductForm";
 
 export const NewProduct = () => {
   const navigate = useNavigate();

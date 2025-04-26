@@ -47,6 +47,10 @@ export const EditCategory = () => {
     }
   }, [id]);
 
+  const handleSuccess = () => {
+    navigate('/admin/dashboard');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -83,7 +87,7 @@ export const EditCategory = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <CategoryForm initialData={category} />
+      <CategoryForm initialData={category} onSuccess={handleSuccess} />
     </div>
   );
 };

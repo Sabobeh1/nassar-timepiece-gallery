@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -167,9 +168,11 @@ export const ProductForm = ({ initialData, onSuccess }: ProductFormProps) => {
         toast.success('Product created successfully');
       }
 
-      // Only navigate if onSuccess isn't provided
       if (onSuccess) {
         onSuccess();
+      } else {
+        // Instead of defaulting to navigate('/admin'), navigate to dashboard
+        navigate('/admin/dashboard');
       }
     } catch (error) {
       console.error('Error saving product:', error);

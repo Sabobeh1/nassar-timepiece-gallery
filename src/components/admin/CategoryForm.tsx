@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -123,6 +124,9 @@ export const CategoryForm = ({ initialData, onSuccess }: CategoryFormProps) => {
       // Only navigate if onSuccess isn't provided
       if (onSuccess) {
         onSuccess();
+      } else {
+        // Instead of navigating elsewhere, ensure we go to the dashboard
+        navigate('/admin/dashboard');
       }
     } catch (error) {
       console.error('Error saving category:', error);

@@ -1,10 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import ProductForm from "@/components/ProductForm";
 import { Navbar } from "@/components/Navbar";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
+import { toast } from "sonner";
 
 type Product = Database['public']['Tables']['products']['Row'];
 
@@ -35,6 +36,7 @@ export const EditProduct = () => {
         setProduct(data);
       } catch (error) {
         console.error('Error fetching product:', error);
+        toast.error('Failed to load product data');
       } finally {
         setLoading(false);
       }
@@ -44,6 +46,10 @@ export const EditProduct = () => {
       fetchProduct();
     }
   }, [id]);
+
+  const handleSuccess = () => {
+    navigate('/admin/dashboard');
+  };
 
   if (loading) {
     return (
@@ -83,7 +89,7 @@ export const EditProduct = () => {
       <Navbar />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Edit Product</h1>
-        <ProductForm product={product} />
+        <ProductForm initialData={product} onSuccess={handleSuccess} />
       </div>
     </div>
   );
