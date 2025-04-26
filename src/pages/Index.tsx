@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/HeroBanner";
+import { ProductSlider } from "@/components/ProductSlider";
 import { useCategories } from "@/hooks/useCategories";
 
 const Index = () => {
@@ -40,6 +41,9 @@ const Index = () => {
       
       {/* Hero Banner */}
       <HeroBanner />
+      
+      {/* Product Slider - New Addition */}
+      <ProductSlider />
       
       {/* Main Content */}
       <main>
