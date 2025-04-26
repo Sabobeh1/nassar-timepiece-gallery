@@ -128,7 +128,7 @@ const WatchDetails = () => {
   const formattedPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'ILS',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);

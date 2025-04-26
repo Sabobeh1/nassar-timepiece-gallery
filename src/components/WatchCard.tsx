@@ -25,7 +25,7 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
   
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'ILS',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price);

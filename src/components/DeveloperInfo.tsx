@@ -31,7 +31,7 @@ export const DeveloperInfo = () => {
           <Linkedin className="h-5 w-5" />
         </a>
         <a 
-          href="https://wa.me/970569681560" 
+          href="https://wa.me/972599059600" 
           target="_blank" 
           rel="noopener noreferrer" 
           className="text-gray-600 hover:text-imeche-red transition-colors"
