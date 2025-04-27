@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -99,9 +98,16 @@ const CollectionsPage = () => {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                  <h2 className="absolute bottom-4 left-4 text-3xl font-playfair font-bold text-white">
-                    {category.name}
-                  </h2>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h2 className="text-3xl font-playfair font-bold text-white mb-2">
+                      {category.name}
+                    </h2>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gold font-montserrat font-medium">
+                        {category.product_count} {category.product_count === 1 ? 'Watch' : 'Watches'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <div className="p-6">
                   <p className="text-Rolex-charcoal/80 mb-4">

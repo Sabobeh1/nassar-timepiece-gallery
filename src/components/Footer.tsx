@@ -45,7 +45,7 @@ const Footer = () => {
             <ul className="space-y-2 font-montserrat">
               <li className="text-gray-300">Email: info@nassarwatches.com</li>
               <li className="text-gray-300">Phone: +970593484819</li>
-              <li className="text-gray-300">Address: 123 Rolex Lane, New York, NY</li>
+              <li className="text-gray-300">Address: Anabta, Toulkarem, Palestine</li>
             </ul>
             
             {/* Social Media */}
