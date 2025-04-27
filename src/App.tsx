@@ -15,6 +15,7 @@ import WatchDetails from "./pages/WatchDetails";
 import AdminLogin from "./pages/AdminLogin";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CheckoutPage from "./pages/CheckoutPage";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/watch/:id" element={<WatchDetails />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 
                 path="/admin/dashboard" 
