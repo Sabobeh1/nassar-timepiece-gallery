@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       categories: {
@@ -103,6 +103,65 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      orders: {
+        Row: {
+          id: string
+          user_id: string
+          first_name: string
+          last_name: string
+          phone: string
+          country: string
+          region: string
+          city: string
+          address: string
+          postal_code: string | null
+          notes: string | null
+          items: Json
+          shipping_fee: number
+          total: number
+          status: 'new' | 'in_progress' | 'completed'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          first_name: string
+          last_name: string
+          phone: string
+          country: string
+          region: string
+          city: string
+          address: string
+          postal_code?: string | null
+          notes?: string | null
+          items: Json
+          shipping_fee: number
+          total: number
+          status?: 'new' | 'in_progress' | 'completed'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          first_name?: string
+          last_name?: string
+          phone?: string
+          country?: string
+          region?: string
+          city?: string
+          address?: string
+          postal_code?: string | null
+          notes?: string | null
+          items?: Json
+          shipping_fee?: number
+          total?: number
+          status?: 'new' | 'in_progress' | 'completed'
+          created_at?: string
+          updated_at?: string
+        }
       }
     }
     Views: {

@@ -186,6 +186,11 @@ export const Navbar = () => {
             <Link to="/contact" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
               Contact
             </Link>
+            {totalItems > 0 && (
+              <Link to="/checkout" className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors">
+                Checkout 
+              </Link>
+            )}
             {user && (
               <div className="flex items-center gap-4">
                 <span className="font-montserrat text-gold">Hello Admin</span>
@@ -331,6 +336,15 @@ export const Navbar = () => {
             >
               Contact
             </Link>
+            {totalItems > 0 && (
+              <Link 
+                to="/checkout"
+                onClick={toggleMenu}
+                className="font-montserrat text-Rolex-charcoal hover:text-gold transition-colors"
+              >
+                Checkout 
+              </Link>
+            )}
             {user && (
               <>
                 <span className="font-montserrat text-gold">Hello Admin</span>

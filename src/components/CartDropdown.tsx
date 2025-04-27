@@ -114,7 +114,7 @@ const CartDropdown = () => {
               </div>
 
               {/* Product Details */}
-              <div className="ml-4 flex flex-1 flex-col min-w-0">
+              <div className="ml-4 flex flex-1 flex-col">
                 <div className="flex justify-between text-base font-medium text-Rolex-black">
                   <Link to={`/watch/${item.id}`} className="truncate">
                     <h3 className="font-playfair hover:text-gold transition-colors">
@@ -132,7 +132,7 @@ const CartDropdown = () => {
                 <p className="mt-1 text-sm text-gray-500">{item.brand}</p>
                 
                 {/* Quantity and Price */}
-                <div className="flex items-center justify-between text-sm mt-2">
+                <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center border rounded">
                     <button
                       onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
@@ -176,7 +176,7 @@ const CartDropdown = () => {
       </div>
 
       {/* Checkout Section - Fixed at Bottom */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-3 px-3 border-t shadow-inner">
+      <div className="sticky bottom-0 bg-white p-4 border-t">
         <div className="space-y-3">
           <div className="flex justify-between font-medium">
             <p>Subtotal</p>
@@ -192,6 +192,13 @@ const CartDropdown = () => {
           
           {/* Action Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <Link to="/checkout" className="sm:col-start-1">
+              <Button
+                className="w-full bg-gold hover:bg-gold/90 text-white flex items-center justify-center h-10"
+              >
+                <span className="text-sm whitespace-nowrap">Checkout </span>
+              </Button>
+            </Link>
             <Button
               className="bg-[#25D366] hover:bg-[#22c55e] text-white flex items-center justify-center h-10"
               onClick={handleWhatsappCheckout}
