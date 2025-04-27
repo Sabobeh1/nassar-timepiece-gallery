@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -70,6 +69,11 @@ const Index = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">
                     <h3 className="text-2xl font-playfair font-bold text-white mb-2">{category.name}</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-gold font-montserrat font-medium">
+                        {category.product_count} {category.product_count === 1 ? 'Watch' : 'Watches'}
+                      </span>
+                    </div>
                     <p className="text-sm text-gray-200 mb-4 line-clamp-2">{category.description}</p>
                     <button 
                       onClick={() => handleCategoryClick(category.id, category.name)}

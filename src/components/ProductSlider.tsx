@@ -1,4 +1,3 @@
-
 import { useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react";
@@ -54,59 +53,62 @@ export const ProductSlider = () => {
   };
 
   return (
-    <div className="relative mx-auto max-w-7xl px-4 py-12">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="relative flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] cursor-pointer"
-              onClick={() => handleProductClick(product.id)}
-            >
-              <div className="m-2">
-                <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
-                  <img
-                    src={product.image_urls[0] || "/placeholder-watch.jpg"}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder-watch.jpg";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-playfair font-bold text-white">
-                      {product.name}
-                    </h3>
+    <div className="relative w-full px-4 py-12">
+      {/* Center container with width constraints for mobile */}
+      <div className="mx-auto max-w-xs sm:max-w-2xl lg:max-w-7xl relative">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="relative flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] cursor-pointer"
+                onClick={() => handleProductClick(product.id)}
+              >
+                <div className="m-2">
+                  <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+                    <img
+                      src={product.image_urls[0] || "/placeholder-watch.jpg"}
+                      alt={product.name}
+                      className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder-watch.jpg";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-lg font-playfair font-bold text-white">
+                        {product.name}
+                      </h3>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+  
+        {/* Navigation Buttons - Positioned with more space on mobile */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute left-0 sm:left-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white z-10"
+          onClick={scrollPrev}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span className="sr-only">Previous slide</span>
+        </Button>
+  
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute right-0 sm:right-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white z-10"
+          onClick={scrollNext}
+        >
+          <ArrowRight className="h-4 w-4" />
+          <span className="sr-only">Next slide</span>
+        </Button>
       </div>
-
-      {/* Navigation Buttons */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
-        onClick={scrollPrev}
-      >
-        <ArrowLeft className="h-4 w-4" />
-        <span className="sr-only">Previous slide</span>
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
-        onClick={scrollNext}
-      >
-        <ArrowRight className="h-4 w-4" />
-        <span className="sr-only">Next slide</span>
-      </Button>
     </div>
   );
 };
