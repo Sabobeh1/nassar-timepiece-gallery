@@ -284,10 +284,7 @@ const WatchDetails = () => {
                       {product.brand || product.category?.name || "Nassar Watches"}
                     </h2>
                   </div>
-                  
-                  <Button variant="ghost" size="icon" className="text-gray-500 hover:text-gold">
-                    <Heart size={24} />
-                  </Button>
+
                 </div>
                 
                 <p className="font-playfair text-3xl text-Rolex-black font-semibold mb-6">
