@@ -88,7 +88,7 @@ const ContactPage = () => {
                     <div>
                       <h3 className="font-semibold text-Rolex-black mb-1">Location</h3>
                       <p className="text-Rolex-charcoal/80">
-                        Al-Remal, Gaza
+                        Anabta, Toulkarem
                         <br />
                         Palestine
                       </p>
@@ -191,17 +191,20 @@ const ContactPage = () => {
           {/* Embedded Map */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d27347.772747681814!2d34.44121503443908!3d31.516429252235802!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14fd7f054e542767%3A0x7ff98dc913046392!2sAl-Remal%2C%20Gaza!5e0!3m2!1sen!2s!4v1704012345678!5m2!1sen!2s"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13488.685024161161!2d35.119478!3d32.307252500000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151d19493062cacf%3A0x878d3ee585d19e42!2z2LnZhtio2KrYpw!5e0!3m2!1sen!2s!4v1745767150656!5m2!1sen!2s"
               width="100%"
               height="400"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Nassar Watches Location"
+              title="Anabta, Tulkarem, Palestine Location"
               className="rounded"
             ></iframe>
           </div>
+
+
+
         </div>
       </main>
       
