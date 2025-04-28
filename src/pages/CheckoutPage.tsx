@@ -181,11 +181,11 @@ const CheckoutPage = () => {
     <div className="min-h-screen bg-Rolex-cream" >
       <Navbar />
       <div className="container mx-auto px-4 py-8" dir="rtl">
-        <div className="flex items-center mb-8">
+        <div className="flex items-center mb-8 ">
           <Button
             variant="ghost"
             onClick={() => navigate(-1)}
-            className="text-gold hover:text-gold/80"
+            className="text-gold hover:text-gold/80  border-2 border-[#FFD700] bg-white"
           >
             <ArrowLeft className="mr-2" />
             العودة للسلة

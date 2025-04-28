@@ -21,7 +21,7 @@ import {
 import { toast } from "sonner";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { CategoryForm } from "@/components/admin/CategoryForm";
-import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useQuery, QueryClient, QueryClientProvider, useMutation } from '@tanstack/react-query';
 
 type Product = Database['public']['Tables']['products']['Row'] & {
   category: Database['public']['Tables']['categories']['Row'];
@@ -48,9 +48,15 @@ export const AdminDashboard = () => {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isDeleteOrderDialogOpen, setIsDeleteOrderDialogOpen] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  // New state to track optimistic updates for order status
+  const [optimisticOrderStatus, setOptimisticOrderStatus] = useState({});
 
-  // Fix: Move the React Query hook outside the functional component
-  const { data: ordersData = [], isLoading: isLoadingOrders, error: ordersError } = useQuery({
+  // Query for fetching orders
+  const { 
+    data: ordersData = [], 
+    isLoading: isLoadingOrders, 
+    error: ordersError 
+  } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => {
       try {
@@ -71,6 +77,80 @@ export const AdminDashboard = () => {
       }
     },
     refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Mutation for toggling order status (completed/new)
+  const toggleOrderStatusMutation = useMutation({
+    mutationFn: async (variables: { orderId: string; currentStatus: string }) => {
+      // Toggle between 'completed' and 'new'
+      const newStatus = variables.currentStatus === 'completed' ? 'new' : 'completed';
+      
+      const { data, error } = await supabase
+        .from('orders')
+        .update({ status: newStatus })
+        .eq('id', variables.orderId)
+        .select();
+        
+      if (error) throw error;
+      return { orderId: variables.orderId, newStatus };
+    },
+    onMutate: ({ orderId, currentStatus }) => {
+      // Optimistically update the UI
+      const newStatus = currentStatus === 'completed' ? 'new' : 'completed';
+      setOptimisticOrderStatus(prev => ({
+        ...prev,
+        [orderId]: newStatus
+      }));
+      
+      // Show toast for user feedback
+      toast.success(`تم تحديث حالة الطلب إلى ${newStatus === 'completed' ? 'مكتمل' : 'جديد'}`);
+      return { orderId, prevStatus: currentStatus };
+    },
+    onError: (error, variables, context) => {
+      // Revert optimistic update on error
+      if (context) {
+        setOptimisticOrderStatus(prev => ({
+          ...prev,
+          [context.orderId]: context.prevStatus
+        }));
+      }
+      toast.error('فشل في تحديث حالة الطلب');
+      console.error('Error updating order status:', error);
+    },
+    onSettled: () => {
+      // Refetch orders to ensure data consistency
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    }
+  });
+
+  // Mutation for deleting orders
+  const deleteOrderMutation = useMutation({
+    mutationFn: async (orderId) => {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+        
+      if (error) throw error;
+      return orderId;
+    },
+    onMutate: (orderId) => {
+      // Close delete dialog immediately
+      setIsDeleteOrderDialogOpen(false);
+      setOrderToDelete(null);
+      
+      // Show immediate feedback
+      toast.success('تم حذف الطلب بنجاح');
+      return { orderId };
+    },
+    onError: (error) => {
+      toast.error('فشل في حذف الطلب');
+      console.error('Error deleting order:', error);
+    },
+    onSettled: () => {
+      // Refetch orders to ensure data consistency
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    }
   });
 
   useEffect(() => {
@@ -151,7 +231,6 @@ export const AdminDashboard = () => {
   };
 
   const handleAddProduct = () => {
-    // Close category form if open
     if (showCategoryForm) {
       setShowCategoryForm(false);
       setEditingCategory(null);
@@ -162,7 +241,6 @@ export const AdminDashboard = () => {
   };
 
   const handleEditProduct = (product: Product) => {
-    // Close category form if open
     if (showCategoryForm) {
       setShowCategoryForm(false);
       setEditingCategory(null);
@@ -173,7 +251,6 @@ export const AdminDashboard = () => {
   };
 
   const handleAddCategory = () => {
-    // Close product form if open
     if (showProductForm) {
       setShowProductForm(false);
       setEditingProduct(null);
@@ -184,7 +261,6 @@ export const AdminDashboard = () => {
   };
 
   const handleEditCategory = (category: Category) => {
-    // Close product form if open
     if (showProductForm) {
       setShowProductForm(false);
       setEditingProduct(null);
@@ -212,45 +288,21 @@ export const AdminDashboard = () => {
     setEditingCategory(null);
   };
 
-  const handleDeleteOrder = async () => {
-    if (!orderToDelete) return;
-
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('id', orderToDelete.id);
-
-      if (error) throw error;
-
-      // Refetch orders after deletion
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('تم حذف الطلب بنجاح');
-    } catch (error) {
-      console.error('Error deleting order:', error);
-      toast.error('فشل في حذف الطلب');
-    } finally {
-      setIsDeleteOrderDialogOpen(false);
-      setOrderToDelete(null);
-    }
+  // New function to handle toggling order status
+  const handleToggleOrderStatus = (order) => {
+    const currentStatus = optimisticOrderStatus[order.id] || order.status;
+    toggleOrderStatusMutation.mutate({ 
+      orderId: order.id, 
+      currentStatus 
+    });
   };
 
-  const handleCompleteOrder = async (order: Order) => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: 'completed' })
-        .eq('id', order.id);
-
-      if (error) throw error;
-
-      // Refetch orders after update
-      queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success('تم تحديث حالة الطلب بنجاح');
-    } catch (error) {
-      console.error('Error updating order:', error);
-      toast.error('فشل في تحديث حالة الطلب');
-    }
+  // New function to handle deleting an order immediately
+  const handleDeleteOrderImmediate = (orderId) => {
+    // Show confirmation toast first
+    toast.info('جاري حذف الطلب...', { duration: 1000 });
+    // Delete immediately
+    deleteOrderMutation.mutate(orderId);
   };
 
   // Helper function to safely parse JSON
@@ -268,6 +320,13 @@ export const AdminDashboard = () => {
       console.error('Error parsing items:', e);
       return [];
     }
+  };
+
+  // Get effective status (considering optimistic updates)
+  const getEffectiveStatus = (order) => {
+    return optimisticOrderStatus[order.id] !== undefined 
+      ? optimisticOrderStatus[order.id] 
+      : order.status;
   };
 
   if (loading) {
@@ -531,75 +590,107 @@ export const AdminDashboard = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {ordersData.map((order: any) => (
-                        <TableRow 
-                          key={order.id}
-                          className={order.status === 'completed' ? 'bg-green-50' : ''}
-                        >
-                          <TableCell>#{order.id}</TableCell>
-                          <TableCell>
-                            {order.first_name || ''} {order.last_name || ''}
-                          </TableCell>
-                          <TableCell>{order.phone || 'N/A'}</TableCell>
-                          <TableCell>{order.region || 'N/A'}</TableCell>
-                          <TableCell>{order.total || 0} ريال</TableCell>
-                          <TableCell>
-                            {order.status === "new" ? (
-                              <Badge variant="secondary">جديد</Badge>
-                            ) : order.status === "in_progress" ? (
-                              <Badge variant="default">قيد التنفيذ</Badge>
-                            ) : order.status === "completed" ? (
-                              <Badge variant="outline">مكتمل</Badge>
-                            ) : (
-                              <Badge variant="secondary">غير معروف</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {order.created_at ? format(new Date(order.created_at), "dd/MM/yyyy HH:mm") : 'N/A'}
-                          </TableCell>
-                          <TableCell>
-                            <div className="space-y-1">
-                              {(() => {
-                                const items = safeParseItems(order.items);
-                                return items.length > 0 ? (
-                                  items.map((item: any, index: number) => (
-                                    <div key={`${item.product_id || index}`} className="text-sm">
-                                      {item.name || 'Unnamed Product'} × {item.quantity || 1}
-                                    </div>
-                                  ))
-                                ) : (
-                                  <div className="text-sm text-gray-500">No items data</div>
-                                );
-                              })()}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              {order.status !== 'completed' && (
+                      {ordersData.map((order: any) => {
+                        const effectiveStatus = getEffectiveStatus(order);
+                        const isCompleted = effectiveStatus === 'completed';
+                        
+                        return (
+                          <TableRow 
+                            key={order.id}
+                            className={isCompleted ? 'bg-green-50' : ''}
+                          >
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              #{order.id}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              {order.first_name || ''} {order.last_name || ''}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              {order.phone || 'N/A'}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              {order.region || 'N/A'}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              {order.total || 0} ريال
+                            </TableCell>
+                            <TableCell>
+                              {effectiveStatus === "new" ? (
+                                <Badge 
+                                  variant="secondary"
+                                  className="cursor-pointer transition-colors duration-200 hover:bg-green-100"
+                                  onClick={() => handleToggleOrderStatus(order)}
+                                >
+                                  جديد
+                                </Badge>
+                              ) : effectiveStatus === "in_progress" ? (
+                                <Badge 
+                                  variant="default"
+                                  className="cursor-pointer transition-colors duration-200 hover:bg-green-100"
+                                  onClick={() => handleToggleOrderStatus(order)}
+                                >
+                                  قيد التنفيذ
+                                </Badge>
+                              ) : effectiveStatus === "completed" ? (
+                                <Badge 
+                                  variant="outline"
+                                  className="bg-green-100 cursor-pointer transition-colors duration-200 hover:bg-gray-100"
+                                  onClick={() => handleToggleOrderStatus(order)}
+                                >
+                                  مكتمل
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary">غير معروف</Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              {order.created_at ? format(new Date(order.created_at), "dd/MM/yyyy HH:mm") : 'N/A'}
+                            </TableCell>
+                            <TableCell className={isCompleted ? 'line-through text-gray-500' : ''}>
+                              <div className="space-y-1">
+                                {(() => {
+                                  const items = safeParseItems(order.items);
+                                  return items.length > 0 ? (
+                                    items.map((item: any, index: number) => (
+                                      <div key={`${item.product_id || index}`} className="text-sm">
+                                        {item.name || 'Unnamed Product'} × {item.quantity || 1}
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <div className="text-sm text-gray-500">No items data</div>
+                                  );
+                                })()}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() => handleCompleteOrder(order)}
-                                  className="text-green-600 hover:text-green-700"
+                                  onClick={() => handleToggleOrderStatus(order)}
+                                  className={`transition-colors ${
+                                    isCompleted 
+                                      ? 'text-gray-600 hover:text-gray-700 border-gray-300' 
+                                      : 'text-green-600 hover:text-green-700 border-green-200 hover:border-green-300'
+                                  }`}
+                                  title={isCompleted ? 'تحديث الحالة إلى جديد' : 'تحديث الحالة إلى مكتمل'}
                                 >
                                   <Check className="h-4 w-4" />
                                 </Button>
-                              )}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setOrderToDelete(order);
-                                  setIsDeleteOrderDialogOpen(true);
-                                }}
-                                className="text-red-600 hover:text-red-700"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteOrderImmediate(order.id)}
+                                  className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
+                                  title="حذف الطلب"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 )}
@@ -622,25 +713,6 @@ export const AdminDashboard = () => {
               </Button>
               <Button variant="destructive" onClick={handleDelete}>
                 Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isDeleteOrderDialogOpen} onOpenChange={setIsDeleteOrderDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>تأكيد الحذف</DialogTitle>
-              <DialogDescription>
-                هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDeleteOrderDialogOpen(false)}>
-                إلغاء
-              </Button>
-              <Button variant="destructive" onClick={handleDeleteOrder}>
-                حذف
               </Button>
             </DialogFooter>
           </DialogContent>
