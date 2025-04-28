@@ -321,7 +321,7 @@ const CheckoutPage = () => {
                   onChange={handleChange}
                   required
                   className="w-full"
-                  placeholder="القدس"
+                  placeholder="طولكرم/عنبتا/شارع السكة بجانب المسجد"
                 />
               </div>
 
