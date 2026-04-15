@@ -117,7 +117,10 @@ const WatchCard = ({ id, name, brand, price, images, category, isNew = false }: 
         </div>
         
         <Link to={`/watch/${id}`}>
-          <h3 className="font-playfair font-semibold text-lg leading-tight group-hover:text-gold transition-colors line-clamp-2 min-h-[3.5rem]">
+          <h3
+            title={name}
+            className="font-playfair font-semibold text-base sm:text-lg leading-snug group-hover:text-gold transition-colors line-clamp-3 min-h-[4.5rem] break-words"
+          >
             {name}
           </h3>
         </Link>
