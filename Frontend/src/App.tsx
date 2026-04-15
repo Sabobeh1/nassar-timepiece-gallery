@@ -16,6 +16,7 @@ import AdminLogin from "./pages/AdminLogin";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckoutPage from "./pages/CheckoutPage";
+import ChatWidget from "./components/ChatWidget";
 
 // Create a new QueryClient instance
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
               />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ChatWidget />
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
