@@ -268,21 +268,23 @@ export const Navbar = () => {
 
               {/* Authentication Buttons */}
               {user ? (
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     onClick={handleSignOut}
                   className="bg-red-500 hover:bg-red-600"
                   >
                   Sign Out
                   </Button>
               ) : (
-                <Button 
-                  variant="outline" 
-                  onClick={handleAdminLogin}
-                  className="flex items-center gap-2"
-                >
-                  <LogIn className="h-4 w-4" /> Admin Sign In
-                </Button>
+                // Admin sign-in hidden — admins navigate to /admin/login directly by URL.
+                // <Button
+                //   variant="outline"
+                //   onClick={handleAdminLogin}
+                //   className="flex items-center gap-2"
+                // >
+                //   <LogIn className="h-4 w-4" /> Admin Sign In
+                // </Button>
+                null
               )}
             </div>
 
@@ -371,9 +373,10 @@ export const Navbar = () => {
                 </Button>
               </>
             )}
-            {!user && (
-              <Button 
-                variant="outline" 
+            {/* Admin sign-in hidden on mobile too — admins navigate to /admin/login directly by URL. */}
+            {/* {!user && (
+              <Button
+                variant="outline"
                 onClick={() => {
                   handleAdminLogin();
                   toggleMenu();
@@ -382,7 +385,7 @@ export const Navbar = () => {
               >
                 <LogIn className="h-4 w-4" /> Admin Sign In
               </Button>
-            )}
+            )} */}
             
             {/* Developer Info - Mobile */}
             <div className="pt-4 mt-4 border-t border-gray-200">
