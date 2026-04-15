@@ -76,14 +76,17 @@ export const placeOrderTool = tool(
       items: z
         .array(
           z.object({
-            product_id: z.string().uuid(),
+            product_id: z.string().describe("Actual UUID from inventory_check result"),
             quantity: z.number().int().min(1),
           }),
         )
         .min(1),
       channel: z.enum(["web", "telegram"]),
       channel_user_id: z.string(),
-      user_id: z.string().uuid().optional().describe("auth user id if signed in; omit otherwise"),
+      user_id: z
+        .string()
+        .optional()
+        .describe("Auth user UUID if signed in. OMIT otherwise — do not pass placeholders."),
     }),
   },
 );

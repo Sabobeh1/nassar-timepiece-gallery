@@ -28,9 +28,18 @@ export const inventoryCheckTool = tool(
     description:
       "Exact price and stock lookup via SQL view products_metadata. Use this — NOT product_lookup — whenever the customer asks for price or availability. Returns id, name, price, stock_quantity, category.",
     schema: z.object({
-      product_id: z.string().uuid().optional(),
-      name: z.string().optional().describe("Partial product name (case-insensitive)"),
-      category_id: z.string().uuid().optional(),
+      name: z
+        .string()
+        .optional()
+        .describe("Partial product name (case-insensitive). Prefer this. OMIT if unknown."),
+      product_id: z
+        .string()
+        .optional()
+        .describe("Actual UUID only. OMIT unless you already have one from a previous tool result."),
+      category_id: z
+        .string()
+        .optional()
+        .describe("Actual UUID only. OMIT unless you already have one from a previous tool result."),
     }),
   },
 );

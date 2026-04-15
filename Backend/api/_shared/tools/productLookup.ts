@@ -44,7 +44,12 @@ export const productLookupTool = tool(
     schema: z.object({
       query: z.string().describe("Natural-language description of what the customer wants"),
       k: z.number().int().min(1).max(10).optional().describe("How many results (default 5)"),
-      category_id: z.string().uuid().optional().describe("Restrict to a single category"),
+      category_id: z
+        .string()
+        .optional()
+        .describe(
+          "Actual UUID only, from a previous tool result. OMIT if you don't have one — do not pass placeholders.",
+        ),
     }),
   },
 );
