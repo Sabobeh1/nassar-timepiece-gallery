@@ -47,7 +47,7 @@ export default function ChatWidget() {
     setMessages((m) => [...m, { role: "user", text }]);
     setBusy(true);
     try {
-      const url = /\/api\//.test(backend) ? backend : `${backend.replace(/\/$/, "")}/api/chat`;
+      const url = /\/api\//.test(backend) ? backend : `${backend.replace(/\/$/, "")}/api/webhook`;
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
