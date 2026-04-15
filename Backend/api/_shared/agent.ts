@@ -29,7 +29,20 @@ export interface RunInput {
   channel: "web" | "telegram";
 }
 
+export interface RunResult {
+  reply: string;
+  trace: Array<{ role: string; name?: string; content: string; tool_calls?: unknown }>;
+}
+
 export async function runAgent({ sessionId, userMessage, channel }: RunInput): Promise<string> {
+  return (await runAgentDetailed({ sessionId, userMessage, channel })).reply;
+}
+
+export async function runAgentDetailed({
+  sessionId,
+  userMessage,
+  channel,
+}: RunInput): Promise<RunResult> {
   const history = new SupabaseChatMessageHistory(sessionId);
   const prior = await history.getMessages();
   const channel_user_id = sessionId.split(":").slice(1).join(":");
@@ -52,5 +65,13 @@ export async function runAgent({ sessionId, userMessage, channel }: RunInput): P
   await history.addMessage(human);
   await history.addMessage(last);
 
-  return text;
+  const trace = result.messages.map((m: any) => ({
+    role: m._getType?.() ?? m.role ?? "unknown",
+    name: m.name,
+    content:
+      typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+    tool_calls: m.tool_calls,
+  }));
+
+  return { reply: text, trace };
 }
