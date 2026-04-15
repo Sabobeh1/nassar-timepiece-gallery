@@ -16,7 +16,10 @@ export const inventoryCheckTool = tool(
       return "Refuse: provide product_id, name, or category_id.";
 
     const { data, error } = await q.limit(10);
-    if (error) return `Error: ${error.message}`;
+    if (error) {
+      console.error("inventory_check error:", error);
+      return `Error: ${error.message}`;
+    }
     if (!data?.length) return "No such product.";
     return JSON.stringify(data);
   },
