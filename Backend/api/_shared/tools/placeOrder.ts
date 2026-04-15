@@ -2,8 +2,6 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { supabase } from "../supabase.js";
 
-const BOT_USER_ID = process.env.BOT_SYSTEM_USER_ID ?? null;
-
 export const placeOrderTool = tool(
   async (args) => {
     if (!args.items?.length) return "Refuse: no items provided.";
@@ -37,7 +35,6 @@ export const placeOrderTool = tool(
     const { data, error } = await supabase
       .from("orders")
       .insert({
-        user_id: args.user_id ?? BOT_USER_ID,
         first_name: args.first_name,
         last_name: args.last_name,
         phone: args.phone,
@@ -83,10 +80,6 @@ export const placeOrderTool = tool(
         .min(1),
       channel: z.enum(["web", "telegram"]),
       channel_user_id: z.string(),
-      user_id: z
-        .string()
-        .optional()
-        .describe("Auth user UUID if signed in. OMIT otherwise — do not pass placeholders."),
     }),
   },
 );
