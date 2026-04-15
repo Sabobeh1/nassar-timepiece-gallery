@@ -1,9 +1,6 @@
 import { BaseListChatMessageHistory } from "@langchain/core/chat_history";
 import {
   BaseMessage,
-  HumanMessage,
-  AIMessage,
-  SystemMessage,
   mapChatMessagesToStoredMessages,
   mapStoredMessagesToChatMessages,
   StoredMessage,
@@ -18,19 +15,21 @@ import { supabase } from "./supabase.js";
  */
 export class SupabaseChatMessageHistory extends BaseListChatMessageHistory {
   lc_namespace = ["nassar", "memory"];
-  constructor(private sessionId: string, private windowSize = 20) {
+  constructor(private sessionId: string, private windowSize = 12) {
     super();
   }
 
   async getMessages(): Promise<BaseMessage[]> {
+    // Load the MOST RECENT windowSize messages (not the first N).
     const { data, error } = await supabase
       .from("chat_messages")
-      .select("message")
+      .select("idx, message")
       .eq("session_id", this.sessionId)
-      .order("idx", { ascending: true })
+      .order("idx", { ascending: false })
       .limit(this.windowSize);
     if (error) throw error;
-    const stored = (data ?? []).map((r: any) => r.message as StoredMessage);
+    const rows = (data ?? []).slice().sort((a: any, b: any) => a.idx - b.idx);
+    const stored = rows.map((r: any) => r.message as StoredMessage);
     return mapStoredMessagesToChatMessages(stored);
   }
 

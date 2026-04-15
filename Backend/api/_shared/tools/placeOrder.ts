@@ -2,7 +2,7 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { supabase } from "../supabase.js";
 
-const BOT_USER_ID = process.env.BOT_SYSTEM_USER_ID ?? "00000000-0000-0000-0000-000000000000";
+const BOT_USER_ID = process.env.BOT_SYSTEM_USER_ID ?? null;
 
 export const placeOrderTool = tool(
   async (args) => {
