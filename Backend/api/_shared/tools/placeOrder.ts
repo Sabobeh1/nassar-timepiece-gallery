@@ -55,6 +55,26 @@ export function buildPlaceOrderTool(ctx: RuntimeCtx) {
         .single();
 
       if (error) return `Error placing order: ${error.message}`;
+
+      // Side-effect: always save/update the customer so returning flows work.
+      const { error: upErr } = await supabase.from("users_info").upsert(
+        {
+          phone: args.phone,
+          first_name: args.first_name,
+          last_name: args.last_name,
+          country: args.country,
+          region: args.region,
+          city: args.city,
+          address: args.address,
+          postal_code: args.postal_code ?? null,
+          channel: ctx.channel,
+          channel_user_id: ctx.channel_user_id,
+          last_seen_at: new Date().toISOString(),
+        },
+        { onConflict: "phone" },
+      );
+      if (upErr) console.error("users_info upsert failed:", upErr);
+
       return JSON.stringify({ order_id: data.id, total: data.total });
     },
     {
