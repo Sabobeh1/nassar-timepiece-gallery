@@ -3,8 +3,8 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage, SystemMessage, BaseMessage } from "@langchain/core/messages";
 import { productLookupTool } from "./tools/productLookup.js";
 import { inventoryCheckTool } from "./tools/inventoryCheck.js";
-import { placeOrderTool } from "./tools/placeOrder.js";
-import { lookupCustomerTool, saveCustomerTool } from "./tools/customerInfo.js";
+import { buildPlaceOrderTool } from "./tools/placeOrder.js";
+import { buildLookupCustomerTool, buildSaveCustomerTool } from "./tools/customerInfo.js";
 import { SupabaseChatMessageHistory } from "./memory.js";
 import { loadSystemPrompt } from "./systemPrompt.js";
 
@@ -12,16 +12,6 @@ const llm = new ChatOpenAI({
   model: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
   temperature: 0.4,
 });
-
-const tools = [
-  productLookupTool,
-  inventoryCheckTool,
-  lookupCustomerTool,
-  saveCustomerTool,
-  placeOrderTool,
-];
-
-const agent = createReactAgent({ llm, tools });
 
 export interface RunInput {
   sessionId: string; // "web:<uuid>" or "tg:<chatId>"
@@ -34,8 +24,8 @@ export interface RunResult {
   trace: Array<{ role: string; name?: string; content: string; tool_calls?: unknown }>;
 }
 
-export async function runAgent({ sessionId, userMessage, channel }: RunInput): Promise<string> {
-  return (await runAgentDetailed({ sessionId, userMessage, channel })).reply;
+export async function runAgent(input: RunInput): Promise<string> {
+  return (await runAgentDetailed(input)).reply;
 }
 
 export async function runAgentDetailed({
@@ -47,13 +37,18 @@ export async function runAgentDetailed({
   const prior = await history.getMessages();
   const channel_user_id = sessionId.split(":").slice(1).join(":");
 
-  const system = new SystemMessage(
-    loadSystemPrompt() +
-      `\n\n[runtime]\n` +
-      `channel="${channel}"\n` +
-      `channel_user_id="${channel_user_id}"\n` +
-      `Always pass these exact values to save_customer and place_order.`,
-  );
+  // Runtime-bound tools: identifier is baked in server-side, never exposed to the LLM.
+  const ctx = { channel, channel_user_id };
+  const tools = [
+    productLookupTool,
+    inventoryCheckTool,
+    buildLookupCustomerTool(ctx),
+    buildSaveCustomerTool(ctx),
+    buildPlaceOrderTool(ctx),
+  ];
+  const agent = createReactAgent({ llm, tools });
+
+  const system = new SystemMessage(loadSystemPrompt());
   const human = new HumanMessage(userMessage);
 
   const result = await agent.invoke({
@@ -68,8 +63,7 @@ export async function runAgentDetailed({
   const trace = result.messages.map((m: any) => ({
     role: m._getType?.() ?? m.role ?? "unknown",
     name: m.name,
-    content:
-      typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+    content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
     tool_calls: m.tool_calls,
   }));
 
