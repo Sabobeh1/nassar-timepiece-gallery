@@ -34,4 +34,7 @@ import { Code, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react
 //       </div>
 //     </div>
 //   );
-// }; 
+// };
+
+// Temporary stub so imports resolve while the full component is disabled.
+export const DeveloperInfo = () => null; 
