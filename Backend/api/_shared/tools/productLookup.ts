@@ -14,12 +14,18 @@ export const productLookupTool = tool(
     const filter: Record<string, unknown> = {};
     if (category_id) filter.category_id = category_id;
 
+    // PostgREST needs the vector as a stringified literal, not a JS array.
+    const queryEmbedding = `[${embedding.join(",")}]`;
+
     const { data, error } = await supabase.rpc("match_product_embeddings", {
-      query_embedding: embedding,
+      query_embedding: queryEmbedding,
       match_count: k ?? 5,
       filter,
     });
-    if (error) return `Error: ${error.message}`;
+    if (error) {
+      console.error("product_lookup RPC error:", error);
+      return `Error: ${error.message}`;
+    }
     if (!data?.length) return "No matching products found.";
     return JSON.stringify(
       data.map((r: any) => ({

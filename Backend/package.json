@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "vercel dev",
-    "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "embed:products": "tsx scripts/embedProducts.ts",
     "telegram:webhook": "tsx scripts/setTelegramWebhook.ts"
