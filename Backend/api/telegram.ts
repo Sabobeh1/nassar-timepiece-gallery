@@ -24,7 +24,11 @@ bot.on("message:text", async (ctx) => {
       userMessage: text,
       channel: "telegram",
     });
-    await ctx.reply(reply);
+    // Send with Markdown so **bold**, bullet lists, etc. render in Telegram
+    await ctx.reply(reply, { parse_mode: "Markdown" }).catch(() =>
+      // Fallback to plain text if markdown parsing fails
+      ctx.reply(reply),
+    );
   } catch (err: any) {
     console.error("telegram agent error", err);
     await ctx.reply("Sorry — I hit an error. Please try again in a moment.");
