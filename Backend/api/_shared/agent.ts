@@ -71,7 +71,12 @@ export async function runAgentDetailed({
     messages: [system, ...prior, human] as BaseMessage[],
   });
   const last = result.messages[result.messages.length - 1];
-  const text = typeof last.content === "string" ? last.content : JSON.stringify(last.content);
+  const rawText = typeof last.content === "string" ? last.content : JSON.stringify(last.content);
+
+  // If the guard flagged a soft warning (e.g. >500-char message), prepend it to the reply.
+  const text = guard.warningPrefix
+    ? `${guard.warningPrefix}\n\n---\n\n${rawText}`
+    : rawText;
 
   await history.addMessage(human);
   await history.addMessage(last);

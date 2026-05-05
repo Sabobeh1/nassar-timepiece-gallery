@@ -17,11 +17,13 @@ import { ChatOpenAI } from "@langchain/openai";
 
 /* ── Configuration ─────────────────────────────────────────── */
 
-const MAX_MESSAGE_LENGTH = 500; // characters
-const SPAM_WINDOW_SECONDS = 30; // time window for spam detection
-const SPAM_MAX_MESSAGES = 5;    // max messages within window
-const MAX_STRIKES = 3;          // alerts before the next ban
-const BAN_TIERS_MINUTES = [1, 3, 7, 15]; // 1st, 2nd, 3rd, 4th+ ban
+const LENGTH_WARN_THRESHOLD = 500;   // soft warn — still answers
+const LENGTH_HARD_CUTOFF    = 1000;  // instant ban — no answer
+const LENGTH_BAN_MINUTES    = 10;    // length-based bans (flat, separate from abuse tiers)
+const SPAM_WINDOW_SECONDS   = 30;    // time window for spam detection
+const SPAM_MAX_MESSAGES     = 5;     // max messages within window
+const MAX_STRIKES           = 3;     // alerts before the next abuse ban
+const BAN_TIERS_MINUTES     = [1, 3, 7, 15]; // 1st, 2nd, 3rd, 4th+ abuse ban
 
 /* ── Types ─────────────────────────────────────────────────── */
 
@@ -30,6 +32,8 @@ export interface GuardResult {
   reason?: string;
   /** User-facing message when blocked or alerted */
   userMessage?: string;
+  /** When set on an allowed result, the agent should prepend this to its reply (used for the >500-char "soft" warning). */
+  warningPrefix?: string;
 }
 
 type StrikeReason = "abuse" | "spam";
@@ -42,20 +46,6 @@ const SUGGESTION_MENU =
   "2) Search for a specific watch (brand, style, color)\n" +
   "3) Place a new order\n" +
   "4) Track or look up a previous order";
-
-/* ── Message length check ──────────────────────────────────── */
-
-export function checkMessageLength(message: string): GuardResult {
-  if (message.length > MAX_MESSAGE_LENGTH) {
-    return {
-      allowed: false,
-      reason: "message_too_long",
-      userMessage:
-        "Your message is too long. Please keep it under 500 characters. Try to be brief — for example: \"I want a Rolex\" or \"Show me gold watches\".",
-    };
-  }
-  return { allowed: true };
-}
 
 /* ── Spam detection (rate limiting) ────────────────────────── */
 
@@ -80,12 +70,13 @@ interface SessionState {
   strike_count: number;
   ban_count: number;
   banned_until: string | null;
+  long_msg_warned: boolean;
 }
 
 async function loadState(sessionId: string): Promise<SessionState> {
   const { data, error } = await supabase
     .from("session_bans")
-    .select("strike_count, ban_count, banned_until")
+    .select("strike_count, ban_count, banned_until, long_msg_warned")
     .eq("session_id", sessionId)
     .maybeSingle();
 
@@ -96,6 +87,7 @@ async function loadState(sessionId: string): Promise<SessionState> {
     strike_count: data?.strike_count ?? 0,
     ban_count: data?.ban_count ?? 0,
     banned_until: data?.banned_until ?? null,
+    long_msg_warned: data?.long_msg_warned ?? false,
   };
 }
 
@@ -135,6 +127,7 @@ async function recordStrike(
       strike_count: nextStrikes,
       ban_count: state.ban_count,
       banned_until: null,
+      long_msg_warned: state.long_msg_warned,
       reason: `${reason}: ${detail.slice(0, 100)}`,
     });
     return { allowed: false, reason: `alert_${reason}`, userMessage: alertMessage(nextStrikes, reason) };
@@ -150,6 +143,7 @@ async function recordStrike(
     strike_count: 0,
     ban_count: nextBanCount,
     banned_until: bannedUntil,
+    long_msg_warned: state.long_msg_warned,
     reason: `${reason}: ${detail.slice(0, 100)}`,
   });
 
@@ -164,7 +158,13 @@ async function recordStrike(
 
 async function upsertState(
   sessionId: string,
-  payload: { strike_count: number; ban_count: number; banned_until: string | null; reason: string },
+  payload: {
+    strike_count: number;
+    ban_count: number;
+    banned_until: string | null;
+    long_msg_warned: boolean;
+    reason: string;
+  },
 ): Promise<void> {
   const { error } = await supabase.from("session_bans").upsert(
     {
@@ -172,12 +172,81 @@ async function upsertState(
       strike_count: payload.strike_count,
       ban_count: payload.ban_count,
       banned_until: payload.banned_until,
+      long_msg_warned: payload.long_msg_warned,
       reason: payload.reason,
       last_strike_at: new Date().toISOString(),
     },
     { onConflict: "session_id" },
   );
   if (error) console.error("session_bans upsert error:", error);
+}
+
+/* ── Length policy ─────────────────────────────────────────── */
+
+/**
+ * Length policy:
+ *   - len > LENGTH_HARD_CUTOFF (1000) → instant 10-min ban (no answer).
+ *   - len > LENGTH_WARN_THRESHOLD (500) AND already warned → 10-min ban.
+ *   - len > LENGTH_WARN_THRESHOLD (500) AND not warned → set warned=true,
+ *     return allowed:true with a warningPrefix the agent will prepend to its reply.
+ *   - len ≤ 500 → pass through (warned flag is preserved across normal-length messages).
+ */
+async function checkLength(sessionId: string, message: string): Promise<GuardResult> {
+  const len = message.length;
+  if (len <= LENGTH_WARN_THRESHOLD) return { allowed: true };
+
+  const state = await loadState(sessionId);
+
+  // Hard cutoff — always bans, no answer.
+  if (len > LENGTH_HARD_CUTOFF) {
+    return await applyLengthBan(
+      sessionId,
+      state,
+      `Your message is over **${LENGTH_HARD_CUTOFF} characters**. Long messages are very expensive to process, so your session has been paused for **${LENGTH_BAN_MINUTES} minutes**. Please come back with a brief message — for example: "Show me Rolex watches" or "I want to place an order".`,
+    );
+  }
+
+  // 500–1000: ban only if already warned previously.
+  if (state.long_msg_warned) {
+    return await applyLengthBan(
+      sessionId,
+      state,
+      `You've sent another message over **${LENGTH_WARN_THRESHOLD} characters** after being warned. Long messages are very expensive to process, so your session has been paused for **${LENGTH_BAN_MINUTES} minutes**.`,
+    );
+  }
+
+  // First-time soft warning — set warned=true and let the agent answer.
+  await upsertState(sessionId, {
+    strike_count: state.strike_count,
+    ban_count: state.ban_count,
+    banned_until: null,
+    long_msg_warned: true,
+    reason: `long_message_warning: ${len} chars`,
+  });
+
+  return {
+    allowed: true,
+    warningPrefix:
+      `⚠️ **Heads up:** your message is over **${LENGTH_WARN_THRESHOLD} characters** (${len}). ` +
+      `Long messages are expensive to process — please keep future messages brief. ` +
+      `**Another long message will pause your session for ${LENGTH_BAN_MINUTES} minutes.**`,
+  };
+}
+
+async function applyLengthBan(
+  sessionId: string,
+  state: SessionState,
+  userMessage: string,
+): Promise<GuardResult> {
+  const bannedUntil = new Date(Date.now() + LENGTH_BAN_MINUTES * 60 * 1000).toISOString();
+  await upsertState(sessionId, {
+    strike_count: state.strike_count,
+    ban_count: state.ban_count, // length bans are tracked separately, don't escalate abuse tier
+    banned_until: bannedUntil,
+    long_msg_warned: false, // reset for after the ban expires
+    reason: "length_ban",
+  });
+  return { allowed: false, reason: "length_ban", userMessage };
 }
 
 function alertMessage(strike: number, reason: StrikeReason): string {
@@ -274,9 +343,10 @@ export async function runGuard(
   const ban = await checkBan(sessionId);
   if (!ban.allowed) return ban;
 
-  // 2. Length check (no strike — this is a UX hint).
-  const len = checkMessageLength(message);
-  if (!len.allowed) return len;
+  // 2. Length policy: warn-then-ban for >500, instant ban for >1000.
+  //    May return allowed:true with a warningPrefix to prepend to the agent reply.
+  const lenResult = await checkLength(sessionId, message);
+  if (!lenResult.allowed) return lenResult;
 
   // 3. Spam (sustained burst → strike).
   if (await isSpamming(sessionId)) {
@@ -289,5 +359,6 @@ export async function runGuard(
     return await recordStrike(sessionId, "abuse", message);
   }
 
-  return { allowed: true };
+  // Pass through any warningPrefix from the length check.
+  return { allowed: true, warningPrefix: lenResult.warningPrefix };
 }

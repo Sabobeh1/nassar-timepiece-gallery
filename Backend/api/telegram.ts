@@ -11,14 +11,6 @@ bot.on("message:text", async (ctx) => {
   const chatId = String(ctx.chat.id);
   const text = ctx.message.text;
   try {
-    // Quick length check before invoking the agent (saves tokens)
-    const { checkMessageLength } = await import("./_shared/guard.js");
-    const lenCheck = checkMessageLength(text);
-    if (!lenCheck.allowed) {
-      await ctx.reply(lenCheck.userMessage!);
-      return;
-    }
-
     const reply = await runAgent({
       sessionId: `tg:${chatId}`,
       userMessage: text,

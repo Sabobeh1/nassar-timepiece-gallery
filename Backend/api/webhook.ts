@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { runAgent } from "./_shared/agent.js";
-import { checkMessageLength } from "./_shared/guard.js";
 
 const ALLOWED = process.env.ALLOWED_ORIGIN ?? "*";
 
@@ -24,12 +23,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     if (typeof session_id !== "string" || !session_id.trim()) {
       return res.status(400).json({ error: "session_id is required" });
-    }
-
-    // Quick length check before invoking the agent (saves tokens)
-    const lenCheck = checkMessageLength(message);
-    if (!lenCheck.allowed) {
-      return res.status(200).json({ reply: lenCheck.userMessage });
     }
 
     const reply = await runAgent({
