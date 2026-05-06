@@ -1,0 +1,51 @@
+-- ═══════════════════════════════════════════════════════════════════
+-- 10 — Seed example (OPTIONAL)
+-- Uncomment and adjust to seed a test client + a couple of catalog rows.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Replace 'replace-me-with-real-argon2-hash' with an actual hash.
+-- Generate it server-side; never store plaintext API keys.
+--
+-- insert into public.clients (slug, business_name, has_bot, default_currency, api_key_hash)
+-- values ('demo-store', 'Demo Store', true, 'USD', 'replace-me-with-real-argon2-hash')
+-- returning id;
+--
+-- -- Use the returned UUID below. Or wrap in a CTE / DO block:
+--
+-- do $$
+-- declare
+--   v_client uuid;
+--   v_brand  uuid;
+--   v_cat    uuid;
+-- begin
+--   insert into public.clients (slug, business_name, has_bot, api_key_hash)
+--   values ('demo-store', 'Demo Store', true, 'replace-me-with-real-argon2-hash')
+--   returning id into v_client;
+--
+--   insert into public.business_profile (client_id, business_name)
+--   values (v_client, 'Demo Store');
+--
+--   insert into public.site_configuration (client_id)
+--   values (v_client);
+--
+--   insert into public.brands (client_id, name, slug, display_order)
+--   values (v_client, 'Acme', 'acme', 1)
+--   returning id into v_brand;
+--
+--   insert into public.categories (client_id, name, slug, display_order)
+--   values (v_client, 'Watches', 'watches', 1)
+--   returning id into v_cat;
+--
+--   insert into public.products (client_id, name, description, price, stock_quantity,
+--                                category_id, brand_id, images)
+--   values
+--     (v_client, 'Acme Submariner Replica', 'Stainless steel automatic watch.',
+--      450.00, 10, v_cat, v_brand, '{}'::text[]),
+--     (v_client, 'Acme Daytona Replica', 'Chronograph watch.',
+--      550.00, 5, v_cat, v_brand, '{}'::text[]);
+--
+--   insert into public.shipping_regions (client_id, name, fee, display_order)
+--   values
+--     (v_client, 'Local',         5.00, 1),
+--     (v_client, 'International', 25.00, 2);
+-- end $$;

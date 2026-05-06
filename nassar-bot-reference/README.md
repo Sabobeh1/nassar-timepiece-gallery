@@ -9,7 +9,28 @@ When the PRD and this reference disagree, **the PRD wins.**
 ## What's inside
 
 ```
+Database/
+  SUPABASE_PROJECT.md                Target project URL/ref + how to fetch secrets
+  Existing/                          Reference: the current single-tenant SaaS schema
+    DDLs.sql
+    Functions.sql
+  Proposed/                          Fresh-deployment SQL (paste into Supabase SQL editor)
+    README.md                        Run order + idempotence notes
+    00_full_schema.sql               Concatenation of files 01-09 — single-paste convenience
+    01_extensions_and_enums.sql      pgcrypto, vector, uuid-ossp + 5 enums
+    02_clients.sql                   Tenants table (incl. has_bot, bot_brief, bot_settings)
+    03_catalog.sql                   brands, categories, discounts, shipping_regions, products
+    04_orders.sql                    orders, orders_items
+    05_storefront_config.sql         business_profile, site_configuration, announcements, feedbacks
+    06_users_info.sql                Returning-customer profile (per tenant)
+    07_bot_tables.sql                chat_messages, session_bans, product_embeddings
+    08_triggers.sql                  set_updated_at, set_product_number, same-tenant FK guards
+    09_functions.sql                 normalize_phone, generate_order_number, get_orders_by_mobile,
+                                     get_order_items, place_order, match_products
+    10_seed_example.sql              Optional commented-out seed for a demo client
+
 Backend/
+  .env.example                       Template (project URL prefilled; secrets blank)
   api/
     webhook.ts                       Web channel entry (POST /api/webhook)
     telegram.ts                      Telegram channel entry
@@ -36,8 +57,12 @@ Backend/
   tsconfig.json
 
 Frontend/
+  .env.example                       Template (VITE_BACKEND_URL + project URL prefilled)
   src/components/
     ChatWidget.tsx                   React widget + markdown renderer
+
+supabase/
+  .env.example                       Template (project ref prefilled)
 
 supabase/
   migrations/

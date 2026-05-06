@@ -835,4 +835,57 @@ supabase db push                 # apply migrations
 
 ---
 
+## 18. Target Deployment — Supabase Project
+
+The reference deployment target is a fresh Supabase project. The following identifiers are non-secret and safe to commit:
+
+| Field | Value |
+|---|---|
+| Project URL | `https://rropzppodfgzvhkbtlrl.supabase.co` |
+| Project ref | `rropzppodfgzvhkbtlrl` |
+| Dashboard | `https://supabase.com/dashboard/project/rropzppodfgzvhkbtlrl` |
+
+### 18.1 Apply the schema
+
+Files live at `Database/Proposed/`. Two equivalent ways to apply:
+
+- **One-shot paste** — open the SQL editor at `https://supabase.com/dashboard/project/rropzppodfgzvhkbtlrl/sql/new` and paste `Database/Proposed/00_full_schema.sql`. Single click to run; idempotent, safe to re-run.
+- **CLI** — `supabase link --project-ref rropzppodfgzvhkbtlrl` then `supabase db push` against migrations translated from the same SQL.
+
+### 18.2 Where every secret comes from
+
+Secrets are NEVER committed; they are fetched from the Supabase dashboard at deploy time and placed in gitignored `.env` files. Mapping:
+
+| Secret | Source in dashboard | Destination |
+|---|---|---|
+| `SUPABASE_SERVICE_ROLE_KEY` | Settings → API → Project API keys → service_role | `Backend/.env` |
+| `SUPABASE_DB_PASSWORD` | Settings → Database → Connection string | `supabase/.env` (CLI only) |
+| `SUPABASE_ACCESS_TOKEN` | https://supabase.com/dashboard/account/tokens | `supabase/.env` (CLI only) |
+| `VITE_SUPABASE_ANON_KEY` | Settings → API → Project API keys → anon public | `Frontend/.env` (this one is public-by-design) |
+
+The `sb_secret_*` Management API keys and the legacy JWT secret are **not used by the bot at runtime** — they belong to operator tooling only. Do not put them in any service `.env`.
+
+### 18.3 Post-deploy checklist
+
+- [ ] All ten files in `Database/Proposed/` have been applied (or the single `00_full_schema.sql`).
+- [ ] At least one row exists in `public.clients`.
+- [ ] RLS policies (PRD §10.2) created for every tenant-scoped table.
+- [ ] Backend deployed to Vercel with all env vars from §17.1.
+- [ ] Frontend deployed with the host page configured to embed `<script data-client-slug="..." data-api-key="...">`.
+- [ ] Smoke test: send a message via the widget; confirm the reply lands in `chat_messages` for the right `client_id`.
+- [ ] Daily PITR backups enabled in Settings → Database → Backups.
+
+### 18.4 If credentials are ever exposed
+
+Rotation is the only remediation. The procedure:
+
+1. Settings → API → **Reset JWT secret** (rotates anon + service_role; invalidates the legacy JWT secret).
+2. Settings → API Keys → revoke and regenerate every `sb_secret_*`.
+3. Update every `.env` (local + CI + Vercel project env) with the new keys.
+4. Redeploy any service that holds the old keys in process memory.
+
+Old service-role / JWT-secret leaks effectively grant indefinite full DB access until rotated — treat as a P0 incident.
+
+---
+
 **End of PRD.**
