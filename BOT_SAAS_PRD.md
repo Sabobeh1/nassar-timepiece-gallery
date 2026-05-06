@@ -748,4 +748,91 @@ The engineering agent should generalize these patterns to `client_id`-bound tool
 
 ---
 
+## 17. Environment Variables
+
+Each workspace owns its own `.env` file. Nothing is shared across workspaces. The Frontend must NEVER receive any secret (no service-role key, no OpenAI key, no Telegram token) — it only knows the public Backend URL.
+
+### 17.1 Backend (`/Backend/.env`)
+
+Loaded by Vercel functions (and `tsx` for scripts/cron). All secrets live here.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `SUPABASE_URL` | yes | Project URL, e.g. `https://<ref>.supabase.co`. |
+| `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-only key. Bypasses RLS. **Never exposed to the frontend.** |
+| `OPENAI_API_KEY` | yes | OpenAI API key (for the agent LLM, the message classifier, and embeddings). |
+| `OPENAI_MODEL` | no | Defaults to `gpt-4o-mini`. Override per-deployment if you want a stronger/cheaper model. |
+| `OPENAI_EMBEDDING_MODEL` | no | Defaults to `text-embedding-3-small`. Must match the dimension on `product_embeddings.embedding` (1536). |
+| `ALLOWED_ORIGIN` | yes | CORS allow-list for `/api/webhook`. In production set to the storefront origin (or comma-separated list); never leave as `*` once you go live. |
+| `CRON_SECRET` | yes | Shared secret for the embeddings cron endpoint. Vercel Cron sends it as `Authorization: Bearer <secret>`. |
+| `TELEGRAM_BOT_TOKEN_<SLUG>` | per client | Pattern for one-bot-per-client (Q1 in §13). E.g. `TELEGRAM_BOT_TOKEN_NASSAR_WATCHES`. The webhook resolves `client_slug → token` at startup. Alternative: store the token on `clients.telegram_bot_token` instead and skip the env var entirely (recommended for self-serve). |
+| `BACKEND_URL` | yes (scripts only) | Used by `scripts/setTelegramWebhook.ts` to register the Telegram webhook against the deployed backend. |
+| `LOG_LEVEL` | no | `debug` / `info` / `warn` / `error`. Defaults to `info`. |
+
+`.env.example` (committed; no real values) documents every key. `.env` (uncommitted) holds real values. Vercel project settings override both for production.
+
+### 17.2 Frontend (`/Frontend/.env`)
+
+Vite-prefixed (`VITE_*`) keys are inlined into the bundle and visible to anyone who views page source. **Treat them as public.**
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `VITE_BACKEND_URL` | yes | Public Backend base URL, e.g. `https://bot.example.com`. The widget posts to `${VITE_BACKEND_URL}/api/webhook`. |
+| `VITE_DEFAULT_CLIENT_SLUG` | no | Used only when the host page does NOT provide `data-client-slug` on the script tag. Useful for local dev. |
+
+The per-tenant **API key** (`api_key_hash` in DB) is provided by the host page via `<script data-api-key="...">`, NOT through env. This way one Frontend bundle serves every tenant.
+
+Anything secret (OpenAI key, service role key, Telegram tokens) MUST NOT be in this file. CI should fail the build if it detects a non-`VITE_`-prefixed key, or any key matching `*KEY*` / `*SECRET*` / `*TOKEN*`.
+
+### 17.3 Supabase (`/supabase/.env` — local dev / CLI only)
+
+The `supabase` CLI reads these for `supabase db push`, `supabase functions deploy`, etc. They are **operator credentials**, not runtime secrets, and are never deployed.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `SUPABASE_PROJECT_REF` | yes | The 20-char project ref (e.g. `abcd1234efgh5678ijkl`). Used by `supabase link`. |
+| `SUPABASE_DB_PASSWORD` | yes | DB password for `supabase db push` migrations against the linked project. |
+| `SUPABASE_ACCESS_TOKEN` | yes | Personal access token from the Supabase dashboard. Used by the CLI to authenticate. |
+
+Production migrations should run from CI using these as encrypted CI secrets — never run `db push` from a developer laptop pointed at production.
+
+### 17.4 CI / Deployment
+
+The CI runner needs:
+
+- All Backend keys from §17.1 (set as encrypted secrets in GitHub Actions / Vercel env).
+- All Supabase CLI keys from §17.3 (for the migration job).
+- A separate CI key per environment: `STAGING_*` and `PRODUCTION_*` prefixes, never share an OpenAI key across envs (rate-limit blast radius).
+
+### 17.5 Local development quickstart
+
+```bash
+# Backend
+cd Backend
+cp .env.example .env             # fill in Supabase + OpenAI keys
+npm install
+npm run dev                      # vercel dev on :3000
+
+# Frontend
+cd Frontend
+cp .env.example .env             # set VITE_BACKEND_URL=http://localhost:3000
+npm install
+npm run dev                      # vite on :5173
+
+# Supabase (local)
+cd supabase
+cp .env.example .env             # set SUPABASE_PROJECT_REF + access token
+supabase link --project-ref $SUPABASE_PROJECT_REF
+supabase db push                 # apply migrations
+```
+
+### 17.6 Secret hygiene
+
+- Every workspace ships a `.env.example` with all keys present and dummy values.
+- Real `.env` files are in `.gitignore` (verify before merging).
+- Add a pre-commit hook (or CI scan) that rejects commits containing strings matching `sk-...`, `eyJ...`, `service_role`, etc.
+- Rotate `SUPABASE_SERVICE_ROLE_KEY` and `OPENAI_API_KEY` on any suspected leak; both are easy to rotate from their respective dashboards without a code change.
+
+---
+
 **End of PRD.**
